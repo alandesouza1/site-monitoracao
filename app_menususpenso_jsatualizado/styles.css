@@ -1,0 +1,297 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
+
+:root {
+  --c-background: #ffffff;
+  --c-button: #007bff;
+  --c-button-hover: #0056b3;
+  --c-text: #ffffff;
+  --c-gray: #f0f0f0;
+  --c-header: #007bff;
+  --c-nav: #0056b3;
+  --c-sidebar: #f4f4f4;
+  --c-border: #ccc;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--c-background);
+  color: var(--c-text);
+  height: 100%; /* Garante que a página ocupe 100% da altura da janela */
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--c-header);
+  z-index: 1000; /* Mantém o header acima dos outros elementos */
+}
+
+#nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  height: 60px;
+  color: var(--c-text);
+}
+
+.nav-left h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700; /* Roboto Bold */
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-right h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700; /* Roboto Bold */
+}
+
+.nav-right ul {
+  display: flex;
+  gap: 15px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-right ul li {
+  position: relative;
+}
+
+.nav-right ul li a {
+  color: var(--c-text);
+  text-decoration: none;
+  font-size: 18px;
+  transition: font-size 0.3s ease;
+  font-weight: 400; /* Roboto Regular */
+}
+
+.nav-right ul li a:hover {
+  font-size: 20px;
+  font-weight: 500; /* Roboto Medium */
+}
+
+/* Dropdown Menu */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--c-nav);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 4px;
+}
+
+.dropdown-content a {
+  color: var(--c-text);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--c-button-hover);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Container principal */
+#root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: var(--c-gray);
+  margin-top: 80px; /* Compensa a altura do header fixo */
+}
+
+#container {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+}
+
+#sidebar {
+  background-color: var(--c-sidebar);
+  padding: 20px;
+  width: 250px;
+  border-right: 1px solid var(--c-border);
+  height: calc(
+    100vh - 280px
+  ); /* Ajusta a altura da sidebar considerando o header e footer fixos */
+  overflow-y: auto; /* Adiciona barra de rolagem se necessário */
+}
+
+#sidebar h3 {
+  margin-top: 0;
+  color: var(--c-text);
+  font-weight: 700; /* Roboto Bold */
+}
+
+#sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#sidebar ul li {
+  margin-bottom: 10px;
+}
+
+#sidebar ul li button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: var(--c-button);
+  color: var(--c-text);
+  border: none;
+  text-align: left;
+  border-radius: 4px;
+  font-weight: 500; /* Roboto Medium */
+}
+
+#sidebar ul li button:hover {
+  background-color: var(--c-button-hover);
+}
+
+#main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#content-frame {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--c-border);
+  background-color: var(--c-background);
+  flex-grow: 1;
+  border-radius: 4px;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.button-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: var(--c-button);
+  color: var(--c-text);
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  font-weight: 500; /* Roboto Medium */
+}
+
+.button-container button:hover {
+  background-color: var(--c-button-hover);
+}
+
+#foot {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--c-header);
+  color: var(--c-text);
+  padding: 10px;
+  text-align: center;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400; /* Roboto Regular */
+  z-index: 1000; /* Mantém o footer acima dos outros elementos */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  #nav {
+    flex-direction: column; /* Muda a direção para coluna em telas menores */
+    align-items: flex-start; /* Alinha os itens no início em vez do centro */
+    padding: 10px 20px;
+    height: auto; /* Permite que a altura seja ajustada automaticamente */
+  }
+
+  #nav h2 {
+    font-size: 20px; /* Ajusta o tamanho do texto em telas menores */
+  }
+
+  .nav-right {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-right ul {
+    flex-direction: column; /* Muda a direção dos itens do menu para coluna */
+    width: 100%; /* Ocupa toda a largura */
+    gap: 10px; /* Reduz o espaçamento entre os itens do menu */
+  }
+
+  .nav-right a {
+    font-size: 16px; /* Reduz o tamanho da fonte dos links em telas menores */
+    padding: 10px 0; /* Adiciona espaçamento vertical */
+  }
+}
+
+@media (max-width: 576px) {
+  #nav h2 {
+    font-size: 18px; /* Tamanho menor do texto para telas ainda menores */
+  }
+
+  .nav-right ul {
+    align-items: flex-start; /* Alinha os links à esquerda */
+  }
+}
+
+/* Classe para o estado normal dos botões na sidebar */
+.sidebar-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+/* Classe para o estado ativo do botão */
+.sidebar-button.active {
+  background-color: #0056b3;
+}
+
+/* Classe para hover nos botões */
+.sidebar-button:hover {
+  background-color: #0056b3;
+}

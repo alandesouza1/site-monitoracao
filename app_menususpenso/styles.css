@@ -1,0 +1,252 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
+
+:root {
+  --c-background: #ffffff;
+  --c-button: #007bff;
+  --c-button-hover: #0056b3;
+  --c-text: #ffffff;
+  --c-gray: #f0f0f0;
+  --c-header: #007bff;
+  --c-nav: #0056b3;
+  --c-sidebar: #f4f4f4;
+  --c-border: #ccc;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--c-background);
+  color: var(--c-text);
+  height: 100%; /* Garante que a página ocupe 100% da altura da janela */
+}
+
+#head {
+  display: flex;
+  height: 100px;
+  background-color: var(--c-header);
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-text);
+}
+
+#head h1 {
+  font-size: 30px;
+  font-weight: 500; /* Roboto Medium */
+}
+
+#nav {
+  background-color: var(--c-nav);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+  width: 100%;
+  color: var(--c-text);
+}
+
+#nav .nav-left h2,
+#nav .nav-right h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700; /* Roboto Bold */
+}
+
+#nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 15px;
+}
+
+#nav ul li {
+  display: inline;
+  position: relative;
+}
+
+#nav ul li a {
+  color: var(--c-text);
+  text-decoration: none;
+  font-size: 18px;
+  transition: font-size 0.3s ease;
+  font-weight: 400; /* Roboto Regular */
+}
+
+#nav ul li a:hover {
+  font-size: 20px;
+  font-weight: 500; /* Roboto Medium */
+}
+
+/* Dropdown Menu */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--c-nav);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 4px;
+}
+
+.dropdown-content a {
+  color: var(--c-text);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--c-button-hover);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Container principal */
+#root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: var(--c-gray);
+}
+
+#container {
+  display: flex;
+  flex-grow: 1;
+  width: 100%;
+}
+
+#sidebar {
+  background-color: var(--c-sidebar);
+  padding: 20px;
+  width: 250px;
+  border-right: 1px solid var(--c-border);
+  height: calc(
+    100vh - 220px
+  ); /* Ajusta a altura da sidebar considerando o header e nav */
+  overflow-y: auto; /* Adiciona barra de rolagem se necessário */
+}
+
+#sidebar h3 {
+  margin-top: 0;
+  color: var(--c-text);
+  font-weight: 700; /* Roboto Bold */
+}
+
+#sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#sidebar ul li {
+  margin-bottom: 10px;
+}
+
+#sidebar ul li button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: var(--c-button);
+  color: var(--c-text);
+  border: none;
+  text-align: left;
+  border-radius: 4px;
+  font-weight: 500; /* Roboto Medium */
+}
+
+#sidebar ul li button:hover {
+  background-color: var(--c-button-hover);
+}
+
+#main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#content-frame {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--c-border);
+  background-color: var(--c-background);
+  flex-grow: 1;
+  border-radius: 4px;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.button-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: var(--c-button);
+  color: var(--c-text);
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  font-weight: 500; /* Roboto Medium */
+}
+
+.button-container button:hover {
+  background-color: var(--c-button-hover);
+}
+
+#foot {
+  background-color: var(--c-header);
+  color: var(--c-text);
+  padding: 10px;
+  text-align: center;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400; /* Roboto Regular */
+}
+
+/* Responsividade */
+@media (min-width: 576px) {
+  #head h1 {
+    font-size: 36px;
+  }
+}
+
+@media (min-width: 768px) {
+  #nav ul {
+    gap: 20px;
+  }
+
+  #nav ul li a {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 1200px) {
+  #nav {
+    justify-content: space-around;
+  }
+
+  #sidebar {
+    width: 300px;
+  }
+}
