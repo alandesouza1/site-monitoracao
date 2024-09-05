@@ -1,3 +1,49 @@
+// Lista de sites VIP
+var sitesVips = [
+  { name: 'Google', url: 'https://www.google.com' },
+  { name: 'Wikipedia', url: 'https://www.wikipedia.org' },
+  { name: 'YouTube', url: 'https://www.youtube.com' },
+  { name: 'GitHub', url: 'https://www.github.com' },
+  { name: 'Stack Overflow', url: 'https://stackoverflow.com' }
+];
+
+// Lista de sites de teste - Grupo 1
+var sitesTestGroup1 = [
+  { name: 'Mozilla', url: 'https://www.mozilla.org' },
+  { name: 'MDN Web Docs', url: 'https://developer.mozilla.org' },
+  { name: 'CSS Tricks', url: 'https://css-tricks.com' },
+  { name: 'Smashing Magazine', url: 'https://www.smashingmagazine.com' },
+  { name: 'A List Apart', url: 'https://alistapart.com' }
+];
+
+// Lista de sites de teste - Grupo 2
+var sitesTestGroup2 = [
+  { name: 'Hacker News', url: 'https://news.ycombinator.com' },
+  { name: 'Reddit', url: 'https://www.reddit.com' },
+  { name: 'TechCrunch', url: 'https://techcrunch.com' },
+  { name: 'The Verge', url: 'https://www.theverge.com' },
+  { name: 'Ars Technica', url: 'https://arstechnica.com' }
+];
+
+var currentIndex = 0;
+var timer;
+var isPaused = false;
+var remainingTime = 5000; // Tempo de rotação padrão em milissegundos
+
+// Função para obter um grupo de sites por nome
+function getSiteGroup(groupName) {
+  switch (groupName) {
+    case 'Grupo VIP':
+      return sitesVips;
+    case 'Grupo 1':
+      return sitesTestGroup1;
+    case 'Grupo 2':
+      return sitesTestGroup2;
+    default:
+      return [];
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function() {
   const dropdownContent = document.querySelector(".dropdown-content");
 
@@ -10,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Evento para carregar o conteúdo do grupo de sites ao clicar no link do dropdown
     dropdownLink.addEventListener("click", function(event) {
       event.preventDefault();
-      const sitesArray = getSiteGroup(groupName); // Obtém o grupo de sites usando a função do manipulateSites.js
+      const sitesArray = getSiteGroup(groupName);
       loadSitesFromArray(sitesArray);
     });
 
