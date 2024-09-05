@@ -295,3 +295,14 @@ header {
 .sidebar-button:hover {
   background-color: #0056b3;
 }
+
+function loadSite(sitesArray, index) {
+  var iframe = document.getElementById('content-frame');
+  iframe.src = sitesArray[index].url;
+
+  // Atualiza o título do site no h3
+  var siteTitle = document.getElementById('site-title');
+  siteTitle.textContent = sitesArray[index].name;
+
+  highlightActiveSite(index);
+}
