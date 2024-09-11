@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const customLinksDropdown = document.getElementById("custom-links-dropdown");
   const addLinkBtn = document.getElementById("addLinkBtn");
 
-  // Função para adicionar links personalizados ao dropdown de Links Personalizados
+  // Função para adicionar links personalizados ao dropdown de Links Aleatórios
   function addCustomLink(linkName, linkUrl) {
     const customLink = document.createElement("a");
     customLink.href = linkUrl;
@@ -83,6 +83,7 @@ var isPaused = false;
 var currentSitesArray = [];
 
 // Funções adicionais para manipular o carregamento dos sites
+
 function loadSitesFromArray(sitesArray) {
   var siteList = document.getElementById("site-list");
   siteList.innerHTML = ""; // Limpa a lista de sites atual
@@ -154,80 +155,4 @@ function copyIframeUrl() {
   var iframeUrl = iframe.src;
 
   // Usa a API de Clipboard para copiar a URL
-  navigator.clipboard.writeText(iframeUrl).then(function () {
-    alert("URL copiada: " + iframeUrl);
-  }).catch(function (err) {
-    console.error("Erro ao copiar a URL: ", err);
-  });
-}
-
-function highlightActiveSite(index) {
-  var siteButtons = document.querySelectorAll("#site-list button");
-  siteButtons.forEach(function (button, i) {
-    if (i === index) {
-      button.classList.add("active"); // Adiciona a classe 'active' ao botão ativo
-    } else {
-      button.classList.remove("active"); // Remove a classe 'active' dos outros botões
-    }
-  });
-}
-
-function createSiteList(sitesArray) {
-  var siteList = document.getElementById("site-list");
-  sitesArray.forEach(function (site, index) {
-    var li = document.createElement("li");
-    var button = document.createElement("button");
-    button.textContent = site.name; // Exibe o nome do site
-    button.className = "sidebar-button"; // Aplica a classe padrão para os botões
-    button.onclick = function () {
-      currentIndex = index;
-      loadSite(sitesArray, currentIndex);
-      clearInterval(timer); // Pausa a rotação automática ao clicar manualmente
-      document.getElementById("pauseBtn").textContent = "Retomar";
-      isPaused = true;
-    };
-    li.appendChild(button);
-    siteList.appendChild(li);
-  });
-}
-
-// Grupos de sites (VIP, Grupo 1, Grupo 2)
-function getSiteGroup(groupName) {
-  switch (groupName) {
-    case "Grupo VIP":
-      return sitesVips;
-    case "Grupo 1":
-      return sitesTestGroup1;
-    case "Grupo 2":
-      return sitesTestGroup2;
-    default:
-      return [];
-  }
-}
-
-// Lista de sites VIP
-var sitesVips = [
-  { name: "Google", url: "https://www.google.com" },
-  { name: "Wikipedia", url: "https://www.wikipedia.org" },
-  { name: "YouTube", url: "https://www.youtube.com" },
-  { name: "GitHub", url: "https://www.github.com" },
-  { name: "Stack Overflow", url: "https://stackoverflow.com" }
-];
-
-// Lista de sites de teste - Grupo 1
-var sitesTestGroup1 = [
-  { name: "Mozilla", url: "https://www.mozilla.org" },
-  { name: "MDN Web Docs", url: "https://developer.mozilla.org" },
-  { name: "CSS Tricks", url: "https://css-tricks.com" },
-  { name: "Smashing Magazine", url: "https://www.smashingmagazine.com" },
-  { name: "A List Apart", url: "https://alistapart.com" }
-];
-
-// Lista de sites de teste - Grupo 2
-var sitesTestGroup2 = [
-  { name: "Hacker News", url: "https://news.ycombinator.com" },
-  { name: "Reddit", url: "https://www.reddit.com" },
-  { name: "TechCrunch", url: "https://techcrunch.com" },
-  { name: "The Verge", url: "https://www.theverge.com" },
-  { name: "Ars Technica", url: "https://arstechnica.com" }
-];
+  navigator.clipboard
