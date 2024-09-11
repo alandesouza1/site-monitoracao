@@ -1,28 +1,34 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Dropdown Elements
   const dropdownContent = document.querySelector(".dropdown-content");
   const customLinksDropdown = document.getElementById("custom-links-dropdown");
   const addLinkBtn = document.getElementById("addLinkBtn");
 
-  // Função para adicionar links personalizados ao dropdown de Links Aleatórios
+  // Variáveis globais para controle do iframe
+  let timer;
+  let currentIndex = 0;
+  let remainingTime = 5000; // 5 segundos para cada site
+  let isPaused = false;
+  let currentSitesArray = [];
+
+  // Adiciona links personalizados ao dropdown "Links Personalizados"
   function addCustomLink(linkName, linkUrl) {
     const customLink = document.createElement("a");
     customLink.href = linkUrl;
     customLink.textContent = linkName;
-    customLink.target = "_blank"; // Abre o link em nova aba
-
+    customLink.target = "_blank";
     customLinksDropdown.appendChild(customLink);
   }
 
-  // Adicionando links provisórios para teste
+  // Adicionando links provisórios
   addCustomLink("OpenAI", "https://www.openai.com");
   addCustomLink("Google", "https://www.google.com");
   addCustomLink("Wikipedia", "https://www.wikipedia.org");
 
-  // Evento para adicionar um link personalizado ao clicar no botão "Adicionar Link"
-  addLinkBtn.addEventListener("click", function () {
+  // Evento de adicionar um link personalizado
+  addLinkBtn?.addEventListener("click", function () {
     const linkName = prompt("Insira o nome do link:");
     const linkUrl = prompt("Insira a URL do link:");
-
     if (linkName && linkUrl) {
       addCustomLink(linkName, linkUrl);
       alert("Link adicionado com sucesso!");
@@ -31,130 +37,192 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Adiciona opções no dropdown para diferentes grupos de sites
+  // Adiciona grupo de sites no dropdown
   function addDropdownGroupOption(groupName) {
     const dropdownLink = document.createElement("a");
     dropdownLink.href = "#";
     dropdownLink.textContent = groupName;
 
-    // Evento para carregar o conteúdo do grupo de sites ao clicar no link do dropdown
     dropdownLink.addEventListener("click", function (event) {
       event.preventDefault();
-      const sitesArray = getSiteGroup(groupName); // Obtém o grupo de sites usando a função
+      const sitesArray = getSiteGroup(groupName);
       loadSitesFromArray(sitesArray);
-      saveCurrentGroup(groupName); // Salva o grupo selecionado no LocalStorage
+      saveCurrentGroup(groupName);
     });
 
     dropdownContent.appendChild(dropdownLink);
   }
 
-  // Função para salvar o grupo atual no LocalStorage
+  // Funções de LocalStorage
   function saveCurrentGroup(groupName) {
     localStorage.setItem("currentGroup", groupName);
   }
 
-  // Função para carregar o grupo salvo no LocalStorage
   function loadSavedGroup() {
     return localStorage.getItem("currentGroup");
   }
 
-  // Adiciona grupos de sites ao dropdown
+  // Adicionando os grupos de sites no dropdown
   addDropdownGroupOption("Grupo VIP");
   addDropdownGroupOption("Grupo 1");
   addDropdownGroupOption("Grupo 2");
 
-  // Carrega o grupo salvo no LocalStorage ou inicia com "Grupo VIP" se não houver nada salvo
+  // Carrega o grupo salvo ou inicia com "Grupo VIP"
   const savedGroup = loadSavedGroup() || "Grupo VIP";
   loadSitesFromArray(getSiteGroup(savedGroup));
 
+  // Botões de controle
   document.getElementById("pauseBtn").onclick = pauseRotation;
   document.getElementById("prevBtn").onclick = showPreviousSite;
   document.getElementById("nextBtn").onclick = showNextSite;
   document.getElementById("adjustTimeBtn").onclick = adjustTime;
   document.getElementById("openInNewTabBtn").onclick = openInNewTab;
   document.getElementById("copyUrlBtn").onclick = copyIframeUrl;
-});
 
-// Variáveis globais
-var timer;
-var currentIndex = 0;
-var remainingTime = 5000; // 5 segundos para cada site
-var isPaused = false;
-var currentSitesArray = [];
-
-// Funções adicionais para manipular o carregamento dos sites
-
-function loadSitesFromArray(sitesArray) {
-  var siteList = document.getElementById("site-list");
-  siteList.innerHTML = ""; // Limpa a lista de sites atual
-  currentSitesArray = sitesArray; // Armazena o array atual globalmente
-  currentIndex = 0; // Reinicia o índice para o novo grupo de sites
-  createSiteList(sitesArray);
-  loadSite(sitesArray, currentIndex);
-  startTimer(sitesArray);
-}
-
-function loadSite(sitesArray, index) {
-  var iframe = document.getElementById("content-frame");
-  iframe.src = sitesArray[index].url;
-  highlightActiveSite(index);
-}
-
-function startTimer(sitesArray) {
-  clearInterval(timer); // Limpa qualquer temporizador anterior
-  timer = setInterval(function () {
-    currentIndex = (currentIndex + 1) % sitesArray.length; // Passa para o próximo site, volta ao início ao terminar
+  // Funções relacionadas ao carregamento e navegação de sites
+  function loadSitesFromArray(sitesArray) {
+    const siteList = document.getElementById("site-list");
+    siteList.innerHTML = ""; // Limpa a lista de sites atual
+    currentSitesArray = sitesArray;
+    currentIndex = 0;
+    createSiteList(sitesArray);
     loadSite(sitesArray, currentIndex);
-  }, remainingTime);
-}
+    startTimer(sitesArray);
+  }
 
-function pauseRotation() {
-  if (isPaused) {
-    startTimer(currentSitesArray);
-    document.getElementById("pauseBtn").textContent = "Pausar";
-  } else {
+  function loadSite(sitesArray, index) {
+    const iframe = document.getElementById("content-frame");
+    iframe.src = sitesArray[index].url;
+    highlightActiveSite(index);
+  }
+
+  function startTimer(sitesArray) {
     clearInterval(timer);
-    document.getElementById("pauseBtn").textContent = "Retomar";
+    timer = setInterval(function () {
+      currentIndex = (currentIndex + 1) % sitesArray.length;
+      loadSite(sitesArray, currentIndex);
+    }, remainingTime);
   }
-  isPaused = !isPaused;
-}
 
-function showPreviousSite() {
-  currentIndex = (currentIndex - 1 + currentSitesArray.length) % currentSitesArray.length;
-  loadSite(currentSitesArray, currentIndex);
-}
-
-function showNextSite() {
-  currentIndex = (currentIndex + 1) % currentSitesArray.length;
-  loadSite(currentSitesArray, currentIndex);
-}
-
-function adjustTime() {
-  var newTime = prompt(
-    "Insira o novo tempo de rotação em segundos:",
-    remainingTime / 1000
-  );
-  if (newTime !== null && !isNaN(newTime) && newTime > 0) {
-    remainingTime = newTime * 1000; // Converte segundos para milissegundos
-    if (!isPaused) {
+  function pauseRotation() {
+    if (isPaused) {
       startTimer(currentSitesArray);
+      document.getElementById("pauseBtn").textContent = "Pausar";
+    } else {
+      clearInterval(timer);
+      document.getElementById("pauseBtn").textContent = "Retomar";
     }
-  } else {
-    alert("Por favor, insira um valor válido.");
+    isPaused = !isPaused;
   }
-}
 
-function openInNewTab() {
-  var currentSite = currentSitesArray[currentIndex];
-  window.open(currentSite.url, "_blank");
-}
+  function showPreviousSite() {
+    currentIndex = (currentIndex - 1 + currentSitesArray.length) % currentSitesArray.length;
+    loadSite(currentSitesArray, currentIndex);
+  }
 
-// Função para copiar a URL atual do iframe
-function copyIframeUrl() {
-  var iframe = document.getElementById("content-frame");
-  var iframeUrl = iframe.src;
+  function showNextSite() {
+    currentIndex = (currentIndex + 1) % currentSitesArray.length;
+    loadSite(currentSitesArray, currentIndex);
+  }
 
-  // Usa a API de Clipboard para copiar a URL
-  navigator.clipboard
+  function adjustTime() {
+    const newTime = prompt("Insira o novo tempo de rotação em segundos:", remainingTime / 1000);
+    if (newTime !== null && !isNaN(newTime) && newTime > 0) {
+      remainingTime = newTime * 1000;
+      if (!isPaused) {
+        startTimer(currentSitesArray);
+      }
+    } else {
+      alert("Por favor, insira um valor válido.");
+    }
+  }
 
-.writeText(iframeUrl).then(function () { alert("URL copiada: " + iframeUrl); }).catch(function (err) { console.error("Erro ao copiar a URL: ", err); }); }function highlightActiveSite(index) { var siteButtons = document.querySelectorAll("#site-list button"); siteButtons.forEach(function (button, i) { if (i === index) { button.classList.add("active"); // Adiciona a classe 'active' ao botão ativo } else { button.classList.remove("active"); // Remove a classe 'active' dos outros botões } }); }function createSiteList(sitesArray) { var siteList = document.getElementById("site-list"); sitesArray.forEach(function (site, index) { var li = document.createElement("li"); var button = document.createElement("button"); button.textContent = site.name; // Exibe o nome do site button.className = "sidebar-button"; // Aplica a classe padrão para os botões button.onclick = function () { currentIndex = index; loadSite(sitesArray, currentIndex); clearInterval(timer); // Pausa a rotação automática ao clicar manualmente document.getElementById("pauseBtn").textContent = "Retomar"; isPaused = true; }; li.appendChild(button); siteList.appendChild(li); }); }// Grupos de sites (VIP, Grupo 1, Grupo 2) function getSiteGroup(groupName) { switch (groupName) { case "Grupo VIP": return sitesVips; case "Grupo 1": return sitesTestGroup1; case "Grupo 2": return sitesTestGroup2; default: return []; } }// Lista de sites VIP var sitesVips = [ { name: "Google", url: "https://www.google.com" }, { name: "Wikipedia", url: "https://www.wikipedia.org" }, { name: "YouTube", url: "https://www.youtube.com" }, { name: "GitHub", url: "https://www.github.com" }, { name: "Stack Overflow", url: "https://stackoverflow.com" } ];// Lista de sites de teste - Grupo 1 var sitesTestGroup1 = [ { name: "Mozilla", url: "https://www.mozilla.org" }, { name: "MDN Web Docs", url: "https://developer.mozilla.org" }, { name: "CSS Tricks", url: "https://css-tricks.com" }, { name: "Smashing Magazine", url: "https://www.smashingmagazine.com" }, { name: "A List Apart", url: "https://alistapart.com" } ];// Lista de sites de teste - Grupo 2 var sitesTestGroup2 = [ { name: "Hacker News", url: "https://news.ycombinator.com" }, { name: "Reddit", url: "https://www.reddit.com" }, { name: "TechCrunch", url: "https://techcrunch.com" }, { name: "The Verge", url: "https://www.theverge.com" }, { name: "Ars Technica", url: "https://arstechnica.com" } ];
+  function openInNewTab() {
+    const currentSite = currentSitesArray[currentIndex];
+    window.open(currentSite.url, "_blank");
+  }
+
+  function copyIframeUrl() {
+    const iframe = document.getElementById("content-frame");
+    const iframeUrl = iframe.src;
+
+    navigator.clipboard.writeText(iframeUrl)
+      .then(() => {
+        alert("URL copiada: " + iframeUrl);
+      })
+      .catch((err) => {
+        console.error("Erro ao copiar a URL: ", err);
+      });
+  }
+
+  function highlightActiveSite(index) {
+    const siteButtons = document.querySelectorAll("#site-list button");
+    siteButtons.forEach((button, i) => {
+      if (i === index) {
+        button.classList.add("active");
+      } else {
+        button.classList.remove("active");
+      }
+    });
+  }
+
+  function createSiteList(sitesArray) {
+    const siteList = document.getElementById("site-list");
+    sitesArray.forEach((site, index) => {
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      button.textContent = site.name;
+      button.className = "sidebar-button";
+      button.onclick = function () {
+        currentIndex = index;
+        loadSite(sitesArray, currentIndex);
+        clearInterval(timer); // Pausa a rotação automática ao clicar manualmente
+        document.getElementById("pauseBtn").textContent = "Retomar";
+        isPaused = true;
+      };
+      li.appendChild(button);
+      siteList.appendChild(li);
+    });
+  }
+
+  // Função que retorna grupos de sites
+  function getSiteGroup(groupName) {
+    switch (groupName) {
+      case "Grupo VIP":
+        return sitesVips;
+      case "Grupo 1":
+        return sitesTestGroup1;
+      case "Grupo 2":
+        return sitesTestGroup2;
+      default:
+        return [];
+    }
+  }
+
+  // Lista de sites VIP
+  const sitesVips = [
+    { name: "Google", url: "https://www.google.com" },
+    { name: "Wikipedia", url: "https://www.wikipedia.org" },
+    { name: "YouTube", url: "https://www.youtube.com" },
+    { name: "GitHub", url: "https://www.github.com" },
+    { name: "Stack Overflow", url: "https://stackoverflow.com" },
+  ];
+
+  // Lista de sites - Grupo 1
+  const sitesTestGroup1 = [
+    { name: "Mozilla", url: "https://www.mozilla.org" },
+    { name: "MDN Web Docs", url: "https://developer.mozilla.org" },
+    { name: "CSS Tricks", url: "https://css-tricks.com" },
+    { name: "Smashing Magazine", url: "https://www.smashingmagazine.com" },
+    { name: "A List Apart", url: "https://alistapart.com" },
+  ];
+
+  // Lista de sites - Grupo 2
+  const sitesTestGroup2 = [
+    { name: "Hacker News", url: "https://news.ycombinator.com" },
+    { name: "Reddit", url: "https://www.reddit.com" },
+    { name: "TechCrunch", url: "https://techcrunch.com" },
+    { name: "The Verge", url: "https://www.theverge.com" },
+    { name: "Ars Technica", url: "https://arstechnica.com" },
+  ];
+});
