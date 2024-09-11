@@ -10,98 +10,93 @@
   --c-nav: #0056b3;
   --c-sidebar: #f4f4f4;
   --c-border: #ccc;
+
+  /* Novos gradientes */
+  --c-gradient-bg: linear-gradient(90deg, rgba(180,58,91,1) 0%, rgba(253,29,29,0.46) 52%, rgba(252,69,100,1) 100%);
+  --c-gradient-bg-alt: rgb(180,58,91); /* Fallback RGB Color */
 }
 
 * {
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-  font-style: normal;
-}
-
-html,
-body {
   margin: 0;
   padding: 0;
+}
+
+html, body {
+  height: 100%;
   background-color: var(--c-background);
   color: var(--c-text);
-  height: 100%; /* Garante que a página ocupe 100% da altura da janela */
 }
 
-#head {
-  display: flex;
-  height: 100px;
-  background-color: var(--c-header);
+/* Header */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  align-items: center;
-  justify-content: center;
-  color: var(--c-text);
-}
-
-#head h1 {
-  font-size: 30px;
-  font-weight: 500; /* Roboto Medium */
+  background-color: var(--c-header);
+  z-index: 1000;
 }
 
 #nav {
-  background-color: var(--c-nav);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 10px 20px;
   height: 60px;
-  width: 100%;
   color: var(--c-text);
 }
 
-#nav .nav-left h2,
-#nav .nav-right h2 {
-  margin: 0;
+.nav-left a {
   font-size: 24px;
-  font-weight: 700; /* Roboto Bold */
+  font-weight: 700;
+  color: var(--c-text);
+  text-decoration: none;
 }
 
-#nav ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-right ul {
   display: flex;
   gap: 15px;
+  list-style: none;
 }
 
-#nav ul li {
-  display: inline;
-  position: relative;
-}
-
-#nav ul li a {
+.header-link, .dropbtn {
   color: var(--c-text);
   text-decoration: none;
   font-size: 18px;
-  transition: font-size 0.3s ease;
+  padding: 12px 16px;
+  background-color: var(--c-nav);
+  border-radius: 4px;
+  transition: background-color 0.3s ease, font-size 0.3s ease;
   font-weight: 400; /* Roboto Regular */
 }
 
-#nav ul li a:hover {
+.header-link:hover, .dropbtn:hover {
+  background-color: var(--c-button-hover);
   font-size: 20px;
   font-weight: 500; /* Roboto Medium */
 }
 
-/* Dropdown Menu */
 .dropdown-content {
   display: none;
   position: absolute;
   background-color: var(--c-nav);
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1;
   border-radius: 4px;
 }
 
 .dropdown-content a {
-  color: var(--c-text);
   padding: 12px 16px;
-  text-decoration: none;
   display: block;
 }
 
@@ -113,11 +108,12 @@ body {
   display: block;
 }
 
-/* Container principal */
+/* Main Container */
 #root {
   display: flex;
-  flex-direction: column;
-  flex: 1;
+  flex-direction: row;
+  height: calc(100vh - 80px); /* Ajusta a altura total menos o header */
+  margin-top: 80px;
   background-color: var(--c-gray);
 }
 
@@ -127,27 +123,23 @@ body {
   width: 100%;
 }
 
+/* Sidebar */
 #sidebar {
-  background-color: var(--c-sidebar);
-  padding: 20px;
   width: 250px;
+  padding: 20px;
+  background-color: var(--c-sidebar);
   border-right: 1px solid var(--c-border);
-  height: calc(
-    100vh - 220px
-  ); /* Ajusta a altura da sidebar considerando o header e nav */
-  overflow-y: auto; /* Adiciona barra de rolagem se necessário */
+  overflow-y: auto;
+  flex-shrink: 0; /* Garante que o sidebar não encolha */
 }
 
 #sidebar h3 {
-  margin-top: 0;
-  color: var(--c-text);
-  font-weight: 700; /* Roboto Bold */
+  font-weight: 700;
+  margin-bottom: 10px;
 }
 
 #sidebar ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+  list-style: none;
 }
 
 #sidebar ul li {
@@ -158,35 +150,36 @@ body {
   width: 100%;
   padding: 10px;
   font-size: 16px;
-  cursor: pointer;
   background-color: var(--c-button);
   color: var(--c-text);
   border: none;
   text-align: left;
   border-radius: 4px;
-  font-weight: 500; /* Roboto Medium */
+  transition: background-color 0.3s;
+  font-weight: 500;
+  cursor: pointer;
 }
 
-#sidebar ul li button:hover {
+#sidebar ul li button:hover,
+.sidebar-button.active {
   background-color: var(--c-button-hover);
 }
 
+/* Main Content */
 #main-content {
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   align-items: center;
-  justify-content: flex-start;
   padding: 20px;
   box-sizing: border-box;
 }
 
 #content-frame {
   width: 100%;
-  height: 100%;
+  flex-grow: 1;
   border: 1px solid var(--c-border);
   background-color: var(--c-background);
-  flex-grow: 1;
   border-radius: 4px;
 }
 
@@ -199,20 +192,25 @@ body {
 .button-container button {
   padding: 10px 20px;
   font-size: 16px;
-  cursor: pointer;
   background-color: var(--c-button);
   color: var(--c-text);
   border: none;
   border-radius: 4px;
-  transition: background-color 0.3s ease;
-  font-weight: 500; /* Roboto Medium */
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .button-container button:hover {
   background-color: var(--c-button-hover);
 }
 
+/* Footer */
 #foot {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background-color: var(--c-header);
   color: var(--c-text);
   padding: 10px;
@@ -221,32 +219,138 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 400; /* Roboto Regular */
+  font-weight: 400;
+  z-index: 1000;
 }
 
 /* Responsividade */
-@media (min-width: 576px) {
-  #head h1 {
-    font-size: 36px;
+
+/* Smartphones (até 576px) */
+@media (max-width: 576px) {
+  #nav {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+  }
+
+  .nav-right {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-right ul {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .nav-right a {
+    font-size: 16px;
+    padding: 10px 0;
+  }
+
+  #sidebar {
+    width: 100%;
+    height: auto;
+  }
+
+  #container {
+    flex-direction: column;
+  }
+
+  #content-frame {
+    height: 300px;
   }
 }
 
-@media (min-width: 768px) {
-  #nav ul {
-    gap: 20px;
+/* Tablets (577px a 768px) */
+@media (min-width: 577px) and (max-width: 768px) {
+  #nav {
+    padding: 10px 15px;
   }
 
-  #nav ul li a {
+  .nav-left a {
     font-size: 20px;
   }
+
+  .nav-right a {
+    font-size: 16px;
+  }
+
+  #sidebar {
+    width: 200px;
+  }
+
+  #content-frame {
+    height: 400px;
+  }
 }
 
-@media (min-width: 1200px) {
+/* Pequenos Notebooks (769px a 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
   #nav {
-    justify-content: space-around;
+    padding: 10px 20px;
+  }
+
+  .nav-left a {
+    font-size: 22px;
+  }
+
+  .nav-right a {
+    font-size: 17px;
+  }
+
+  #sidebar {
+    width: 220px;
+  }
+
+  #content-frame {
+    height: 500px;
+  }
+}
+
+/* Notebooks e Monitores Médios (1025px a 1440px) */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  #nav {
+    padding: 15px 25px;
+  }
+
+  .nav-left a {
+    font-size: 24px;
+  }
+
+  .nav-right a {
+    font-size: 18px;
+  }
+
+  #sidebar {
+    width: 250px;
+  }
+
+  #content-frame {
+    height: 600px;
+  }
+}
+
+/* Monitores Grandes (acima de 1440px) */
+@media (min-width: 1441px) {
+  #nav {
+    padding: 20px 30px;
+  }
+
+  .nav-left a {
+    font-size: 26px;
+  }
+
+  .nav-right a {
+    font-size: 20px;
   }
 
   #sidebar {
     width: 300px;
+  }
+
+  #content-frame {
+    height: 700px;
   }
 }
