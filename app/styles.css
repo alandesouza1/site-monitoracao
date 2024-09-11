@@ -10,6 +10,8 @@
   --c-nav: #0056b3;
   --c-sidebar: #f4f4f4;
   --c-border: #ccc;
+
+  /* Novos gradientes */
   --c-gradient-bg: linear-gradient(
     90deg,
     rgba(180, 58, 91, 1) 0%,
@@ -22,6 +24,7 @@
 * {
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
+  font-weight: 400;
   margin: 0;
   padding: 0;
 }
@@ -80,14 +83,14 @@ header {
   background-color: var(--c-nav);
   border-radius: 4px;
   transition: background-color 0.3s ease, font-size 0.3s ease;
-  font-weight: 400;
+  font-weight: 400; /* Roboto Regular */
 }
 
 .header-link:hover,
 .dropbtn:hover {
   background-color: var(--c-button-hover);
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 500; /* Roboto Medium */
 }
 
 .dropdown-content {
@@ -117,7 +120,7 @@ header {
 #root {
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 80px); /* Ajusta a altura total menos o header */
   margin-top: 80px;
   background-color: var(--c-gray);
 }
@@ -135,7 +138,7 @@ header {
   background-color: var(--c-sidebar);
   border-right: 1px solid var(--c-border);
   overflow-y: auto;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Garante que o sidebar não encolha */
 }
 
 #sidebar h3 {
@@ -186,6 +189,7 @@ header {
   border: 1px solid var(--c-border);
   background-color: var(--c-background);
   border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
 .button-container {
@@ -203,11 +207,12 @@ header {
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .button-container button:hover {
   background-color: var(--c-button-hover);
+  transform: scale(1.05);
 }
 
 /* Footer */
