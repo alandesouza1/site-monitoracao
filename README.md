@@ -1,3 +1,1 @@
-"Quero agradecer imensamente ao Roberto, Nicolas e Cassio por toda a ajuda nesse projeto. Graças ao apoio de vocês, conseguimos resolver problemas que impactavam diretamente a operação, como a dificuldade em gerenciar várias abas abertas, o travamento do notebook por conta da memória e a complexidade de visualização e troca automática de páginas.
-
-Com o novo site, conseguimos unificar essas questões e criar uma experiência mais fluida e eficiente. Espero que essa solução tenha realmente aliviado essas dores e melhorado o dia a dia de todos. Obrigado, mais uma vez, por fazerem parte dessa conquista!"
+https://chatgpt.com/share/a040621e-7460-454f-b5f0-96dcad0e5c41
