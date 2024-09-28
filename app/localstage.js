@@ -155,3 +155,81 @@ S: Explicação linha por linha
 F: Corrigir
 
 
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciador de Links com LocalStorage</title>
+</head>
+<body>
+  <h1>Gerenciador de Links</h1>
+
+  <div>
+    <input type="text" id="linkName" placeholder="Nome do Link">
+    <input type="text" id="linkUrl" placeholder="URL do Link">
+    <button id="addLinkBtn">Adicionar Link</button>
+  </div>
+
+  <div id="linkContainer"></div>
+
+  <script>
+    // Função para adicionar link personalizado e salvar no LocalStorage
+    function addCustomLink(linkName, linkUrl) {
+      const customLink = { name: linkName, url: linkUrl };
+
+      // Obtém os links armazenados no LocalStorage, ou inicia um array vazio
+      let links = JSON.parse(localStorage.getItem("customLinks")) || [];
+
+      // Adiciona o novo link ao array
+      links.push(customLink);
+
+      // Salva o array atualizado no LocalStorage
+      localStorage.setItem("customLinks", JSON.stringify(links));
+
+      // Atualiza a interface com o novo link
+      renderLinks();
+    }
+
+    // Função para carregar e renderizar os links na interface
+    function loadCustomLinks() {
+      // Obtém os links armazenados no LocalStorage
+      let links = JSON.parse(localStorage.getItem("customLinks")) || [];
+      renderLinks(links);
+    }
+
+    function renderLinks(links) {
+      const linkContainer = document.getElementById("linkContainer");
+      linkContainer.innerHTML = ''; // Limpa o container antes de renderizar
+
+      // Renderiza os links
+      links.forEach(link => {
+        const linkElement = document.createElement("a");
+        linkElement.href = link.url;
+        linkElement.textContent = link.name;
+        linkElement.target = "_blank";
+        linkContainer.appendChild(linkElement);
+      });
+    }
+
+    // Adiciona evento de clique no botão de adicionar link
+    document.getElementById("addLinkBtn").addEventListener("click", function () {
+      const linkName = document.getElementById("linkName").value;
+      const linkUrl = document.getElementById("linkUrl").value;
+
+      if (linkName && linkUrl) {
+        addCustomLink(linkName, linkUrl);
+        alert("Link adicionado com sucesso!");
+      } else {
+        alert("Por favor, insira um nome e uma URL válidos.");
+      }
+    });
+
+    // Carrega os links ao carregar a página
+    document.addEventListener("DOMContentLoaded", function () {
+      loadCustomLinks();
+    });
+  </script>
+</body>
+</html>
+
