@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function() {
     siteLists.forEach((siteList, index) => {
         const li = document.createElement('li');
         const button = document.createElement('button');
-        button.textContent = siteList[0].name; // Exibe o nome do primeiro site do grupo
+        button.textContent = `Grupo ${index + 1}`; // Exibe o nome de cada grupo
 
         button.addEventListener('click', () => {
             pauseInterval(); // Pausar o temporizador ao mudar manualmente
