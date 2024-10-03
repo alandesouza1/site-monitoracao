@@ -88,8 +88,8 @@ body {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 4 colunas */
     grid-template-rows: repeat(3, 1fr); /* 3 linhas */
-    grid-gap: 20px;
-    padding: 20px;
+    grid-gap: 10px;
+    padding: 10px;
 }
 
 /* Estilo dos iframes */
@@ -103,14 +103,14 @@ body {
 
 iframe {
     width: 100%;
-    height: 250px;
+    height: 200px;
     border: 2px solid #00f;
     border-radius: 10px;
     transition: transform 0.3s, box-shadow 0.3s, border-color 0.5s;
     cursor: pointer;
-    transform: scale(0.8); /* Reduz o tamanho do conteúdo */
-    transform-origin: top left; /* Mantém a origem no topo à esquerda */
-    pointer-events: none; /* Desativa a interação por padrão */
+    transform: scale(1); /* Ajuste inicial */
+    transform-origin: top left;
+    pointer-events: none; /* Desativa a interação */
 }
 
 iframe.fullscreen {
@@ -121,8 +121,26 @@ iframe.fullscreen {
     height: 100%;
     z-index: 1000;
     border: none;
-    background: #fff;
     transform: scale(1); /* Restaura para o tamanho original ao expandir */
     transform-origin: center; /* Ajusta para centralizar */
     pointer-events: auto; /* Ativa a interação ao expandir */
+}
+
+/* Botão para abrir em nova aba */
+#open-new-tab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    background-color: #00f;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+    border-radius: 5px;
+    display: none;
+}
+
+#open-new-tab:hover {
+    background-color: #0055ff;
 }
