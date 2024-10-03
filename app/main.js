@@ -19,7 +19,8 @@ let currentSiteListIndex = 0;
 let intervalTime = 5000;
 let interval;
 let isPaused = false;
-let zoomLevel = 1; // Zoom fixo inicial para todos os iframes
+let zoomLevel = 1; // Zoom inicial para o conteúdo dentro dos iframes
+let expandTimeout; // Timeout para expandir o iframe
 
 document.addEventListener("DOMContentLoaded", function() {
     const linkList = document.getElementById('link-list');
@@ -31,11 +32,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const prevGroupBtn = document.getElementById('previous-group');
     const nextGroupBtn = document.getElementById('next-group');
 
-    // Inicializa a lista de iframes para a lista de sites atual
+    // Função para inicializar iframes
     function initializeIframes(siteList) {
         iframesContainer.innerHTML = ''; // Limpar iframes anteriores
 
-        // Cria 12 iframes com base na lista atual
         siteList.forEach((site) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'iframe-wrapper';
@@ -44,22 +44,26 @@ document.addEventListener("DOMContentLoaded", function() {
             iframe.src = site.url;
             iframe.dataset.url = site.url;
 
-            // Aplica zoom fixo inicial
-            iframe.style.transform = `scale(${zoomLevel})`;
-            iframe.style.transformOrigin = 'top left';
-
             wrapper.appendChild(iframe);
             iframesContainer.appendChild(wrapper);
 
-            // Expande o iframe ao clicar uma vez
-            iframe.addEventListener('click', () => {
-                iframe.classList.toggle('fullscreen');
-                if (iframe.classList.contains('fullscreen')) {
+            // Configurar zoom para o conteúdo do iframe
+            iframe.onload = function () {
+                iframe.contentWindow.document.body.style.zoom = zoomLevel;
+            };
+
+            // Expande o iframe após hover por 3 segundos
+            iframe.addEventListener('mouseover', () => {
+                expandTimeout = setTimeout(() => {
+                    iframe.classList.add('fullscreen');
                     openNewTabBtn.style.display = 'block';
                     openNewTabBtn.dataset.url = iframe.dataset.url; // Armazena a URL para nova aba
-                } else {
-                    openNewTabBtn.style.display = 'none';
-                }
+                }, 3000); // 3 segundos
+            });
+
+            // Cancela expansão se o mouse sair antes dos 3 segundos
+            iframe.addEventListener('mouseout', () => {
+                clearTimeout(expandTimeout);
             });
 
             // Sai da tela cheia ao clicar duas vezes
@@ -69,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
 
-        // Atualiza o destaque na lista lateral
         updateActiveListItem();
     }
 
@@ -106,11 +109,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Evento de clique para ajustar o tempo do temporizador
+    // Evento para ajustar o intervalo de tempo do temporizador
     adjustTimeBtn.addEventListener('click', () => {
         const newTime = prompt('Digite o novo intervalo de tempo em segundos:');
         if (newTime && !isNaN(newTime) && newTime > 0) {
-            intervalTime = parseInt(newTime) * 1000; // Converte para milissegundos
+            intervalTime = parseInt(newTime) * 1000;
             if (!isPaused) {
                 clearInterval(interval);
                 startInterval();
@@ -118,16 +121,15 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Evento para ajustar o zoom dos iframes
+    // Evento para ajustar o zoom do conteúdo dentro dos iframes
     adjustZoomBtn.addEventListener('click', () => {
         const newZoom = prompt('Digite o novo nível de zoom (ex: 1 para 100%, 0.5 para 50%):');
         if (newZoom && !isNaN(newZoom) && newZoom > 0) {
             zoomLevel = parseFloat(newZoom);
-            // Reaplica o zoom a todos os iframes
+            // Reaplica o zoom ao conteúdo dos iframes
             const iframes = document.querySelectorAll('iframe');
             iframes.forEach(iframe => {
-                iframe.style.transform = `scale(${zoomLevel})`;
-                iframe.style.transformOrigin = 'top left';
+                iframe.contentWindow.document.body.style.zoom = zoomLevel;
             });
         }
     });
@@ -169,13 +171,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Eventos para os botões de navegação (Anterior/Próximo)
     prevGroupBtn.addEventListener('click', () => {
-        pauseInterval(); // Pausar o temporizador ao mudar manualmente
+        pauseInterval();
         currentSiteListIndex = (currentSiteListIndex - 1 + siteLists.length) % siteLists.length;
         initializeIframes(siteLists[currentSiteListIndex]);
     });
 
     nextGroupBtn.addEventListener('click', () => {
-        pauseInterval(); // Pausar o temporizador ao mudar manualmente
+        pauseInterval();
         currentSiteListIndex = (currentSiteListIndex + 1) % siteLists.length;
         initializeIframes(siteLists[currentSiteListIndex]);
     });
