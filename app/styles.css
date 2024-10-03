@@ -126,8 +126,6 @@ iframe.fullscreen {
     height: 100%;
     z-index: 1000;
     border: none;
-    transform: scale(1); /* Restaura para o tamanho original ao expandir */
-    transform-origin: center; /* Ajusta para centralizar */
     pointer-events: auto; /* Ativa a interação ao expandir */
 }
 
