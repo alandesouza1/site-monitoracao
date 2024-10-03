@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iframes Dinâmicos com UX Aprimorado</title>
+    <title>Iframes Dinâmicos com Destaque</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,30 +14,16 @@
             </ul>
             <!-- Controles de Timer -->
             <div class="controls">
-                <button id="prev">⏮ Anterior</button>
-                <button id="next">⏭ Próximo</button>
-                <button id="adjust-time">⏱ Ajustar Tempo</button>
                 <button id="pause-resume">⏸ Pausar</button>
+                <button id="adjust-time">⏱ Ajustar Tempo</button>
                 <p id="timer-info">Tempo de troca: <span id="interval-time">5</span> segundos</p>
             </div>
         </div>
         <div class="iframes-container">
-            <!-- 12 Iframes serão adicionados pelo JavaScript -->
+            <!-- Todos os 12 iframes serão adicionados pelo JavaScript -->
         </div>
         <!-- Botão para abrir em nova aba -->
         <button id="open-new-tab" style="display: none;">🌐 Abrir em Nova Aba</button>
-
-        <!-- Popup para ajustar tempo -->
-        <div id="time-popup" class="popup">
-            <div class="popup-content">
-                <span class="close-popup" id="close-popup">&times;</span>
-                <h3>Ajuste o Tempo de Troca</h3>
-                <input type="number" id="time-input" min="1" placeholder="Tempo em segundos">
-                <button id="set-time">Definir Tempo</button>
-            </div>
-        </div>
-        <!-- Sobreposição de fundo para o popup -->
-        <div id="popup-overlay" class="overlay"></div>
     </div>
     <script src="script.js"></script>
 </body>
