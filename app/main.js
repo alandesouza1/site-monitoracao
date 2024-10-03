@@ -1,3 +1,35 @@
+// Suponha que você tenha 13 listas de sites como esta (substitua pelos seus próprios dados)
+var sites1 = [
+    { name: "Google", url: "https://www.google.com" },
+    { name: "YouTube", url: "https://www.youtube.com" },
+    // Continue com os 12 links para esta lista
+];
+
+var sites2 = [
+    { name: "GitHub", url: "https://www.github.com" },
+    { name: "Stack Overflow", url: "https://stackoverflow.com" },
+    // Continue com os 12 links para esta lista
+];
+
+// Continue para suas outras listas de sites até sites13
+var sites13 = [
+    { name: "Reddit", url: "https://www.reddit.com" },
+    { name: "Twitter", url: "https://www.twitter.com" },
+    // Continue com os 12 links para esta lista
+];
+
+// Agrupa todas as listas `sites` em um único array `siteLists`
+const siteLists = [
+    sites1, sites2, /* ..., */ sites13
+];
+
+// Variáveis de estado
+let currentSiteListIndex = 0; // Índice da lista de sites atual
+let currentIndex = 0; // Índice do site atual dentro da lista
+let intervalTime = 5000; // Tempo padrão de 5 segundos
+let interval;
+let isPaused = false;
+
 document.addEventListener("DOMContentLoaded", function() {
     const linkList = document.getElementById('link-list');
     const iframesContainer = document.querySelector('.iframes-container');
