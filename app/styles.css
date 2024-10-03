@@ -32,7 +32,7 @@ body {
 }
 
 .sidebar button {
-    color: #00f;
+    color: #fff; /* Texto branco */
     background: none;
     border: none;
     padding: 8px;
@@ -107,13 +107,12 @@ iframe {
     border: 2px solid #00f;
     border-radius: 10px;
     transition: transform 0.3s, box-shadow 0.3s, border-color 0.5s;
+    cursor: pointer;
+    transform: scale(0.8); /* Reduz o tamanho do conteúdo */
+    transform-origin: top left; /* Mantém a origem no topo à esquerda */
+    pointer-events: none; /* Desativa a interação por padrão */
 }
 
-iframe:hover {
-    box-shadow: 0px 0px 15px 5px #00f;
-}
-
-/* Iframe em tela cheia */
 iframe.fullscreen {
     position: fixed;
     top: 0;
@@ -122,25 +121,8 @@ iframe.fullscreen {
     height: 100%;
     z-index: 1000;
     border: none;
-}
-
-/* Botão de abrir em nova aba */
-#open-new-tab {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    padding: 10px;
-    background-color: #00f;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    z-index: 1001;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.2s;
-    display: none;
-}
-
-#open-new-tab:hover {
-    background-color: #0055ff;
-    transform: scale(1.1);
+    background: #fff;
+    transform: scale(1); /* Restaura para o tamanho original ao expandir */
+    transform-origin: center; /* Ajusta para centralizar */
+    pointer-events: auto; /* Ativa a interação ao expandir */
 }
