@@ -1,366 +1,245 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
-
-:root {
-  --c-background: #ffffff;
-  --c-button: #007bff;
-  --c-button-hover: #0056b3;
-  --c-text: #ffffff;
-  --c-gray: #f0f0f0;
-  --c-header: #007bff;
-  --c-nav: #0056b3;
-  --c-sidebar: #f4f4f4;
-  --c-border: #ccc;
-
-  /* Novos gradientes */
-  --c-gradient-bg: linear-gradient(
-    90deg,
-    rgba(180, 58, 91, 1) 0%,
-    rgba(253, 29, 29, 0.46) 52%,
-    rgba(252, 69, 100, 1) 100%
-  );
-  --c-gradient-bg-alt: rgb(180, 58, 91); /* Fallback RGB Color */
-}
-
-* {
-  box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  margin: 0;
-  padding: 0;
-}
-
-html,
+/* Estilos gerais */
 body {
-  height: 100%;
-  background-color: var(--c-background);
-  color: var(--c-text);
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #fff;
 }
 
-/* Header */
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: var(--c-header);
-  z-index: 1000;
+/* Container principal */
+.container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
 }
 
-#nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  height: 60px;
-  color: var(--c-text);
+/* Barra lateral */
+.sidebar {
+    width: 20%;
+    background-color: #1e1e1e;
+    padding: 20px;
+    overflow-y: auto;
 }
 
-.nav-left a {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--c-text);
-  text-decoration: none;
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+.sidebar li {
+    margin: 10px 0;
 }
 
-.nav-right ul {
-  display: flex;
-  gap: 15px;
-  list-style: none;
+.sidebar a {
+    color: #00f;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-.header-link,
-.dropbtn {
-  color: var(--c-text);
-  text-decoration: none;
-  font-size: 18px;
-  padding: 12px 16px;
-  background-color: var(--c-nav);
-  border-radius: 4px;
-  transition: background-color 0.3s ease, font-size 0.3s ease;
-  font-weight: 400; /* Roboto Regular */
+.sidebar a:hover {
+    background-color: #333;
+    transform: scale(1.05);
 }
 
-.header-link:hover,
-.dropbtn:hover {
-  background-color: var(--c-button-hover);
-  font-size: 20px;
-  font-weight: 500; /* Roboto Medium */
+/* Estilo dos botões de controle */
+.controls {
+    margin-top: 20px;
 }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: var(--c-nav);
-  min-width: 160px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  border-radius: 4px;
+button {
+    background-color: #00f;
+    color: #fff;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 100%;
+    font-size: 14px;
 }
 
-.dropdown-content a {
-  padding: 12px 16px;
-  display: block;
+button:hover {
+    background-color: #0055ff;
+    transform: scale(1.05);
 }
 
-.dropdown-content a:hover {
-  background-color: var(--c-button-hover);
+#timer-info {
+    margin-top: 15px;
+    font-weight: bold;
 }
 
-.dropdown:hover .dropdown-content {
-  display: block;
+/* Container de Iframes */
+.iframes-container {
+    width: 80%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
+    padding: 20px;
 }
 
-/* Main Container */
-#root {
-  display: flex;
-  flex-direction: row;
-  height: calc(100vh - 80px); /* Ajusta a altura total menos o header */
-  margin-top: 80px;
-  background-color: var(--c-gray);
+/* Estilo dos iframes */
+.iframe-wrapper {
+    position: relative;
+    text-align: center;
+    color: #fff;
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
 }
 
-#container {
-  display: flex;
-  flex-grow: 1;
-  width: 100%;
+iframe {
+    width: 100%;
+    height: 250px;
+    border: 2px solid #00f;
+    border-radius: 10px;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.5s;
 }
 
-/* Sidebar */
-#sidebar {
-  width: 250px;
-  padding: 20px;
-  background-color: var(--c-sidebar);
-  border-right: 1px solid var(--c-border);
-  overflow-y: auto;
-  flex-shrink: 0; /* Garante que o sidebar não encolha */
+iframe:hover {
+    box-shadow: 0px 0px 15px 5px #00f;
 }
 
-#sidebar h3 {
-  font-weight: 700;
-  margin-bottom: 10px;
+/* Destaque do iframe ativo */
+.iframe-active {
+    border: 4px solid #ff0;
+    animation: highlight 1s infinite alternate;
 }
 
-#sidebar ul {
-  list-style: none;
+/* Animação de destaque do iframe ativo */
+@keyframes highlight {
+    0% { box-shadow: 0px 0px 10px 5px #00f; }
+    100% { box-shadow: 0px 0px 20px 10px #ff0; }
 }
 
-#sidebar ul li {
-  margin-bottom: 10px;
+/* Barra de progresso */
+.progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: #ff0;
+    width: 0;
+    border-radius: 5px;
+    transition: width 0.5s linear;
 }
 
-#sidebar ul li button {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  background-color: var(--c-button);
-  color: var(--c-text);
-  border: none;
-  text-align: left;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-  font-weight: 500;
-  cursor: pointer;
+/* Título do site */
+.site-title {
+    margin: 5px 0;
+    font-weight: bold;
 }
 
-#sidebar ul li button:hover,
-.sidebar-button.active {
-  background-color: var(--c-button-hover);
+/* Iframe em tela cheia */
+iframe.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    border: none;
 }
 
-/* Main Content */
-#main-content {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
+/* Botão de abrir em nova aba */
+#open-new-tab {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 10px;
+    background-color: #00f;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+    display: none;
 }
 
-#content-frame {
-  width: 100%;
-  flex-grow: 1;
-  border: 1px solid var(--c-border);
-  background-color: var(--c-background);
-  border-radius: 4px;
-  transition: all 0.3s ease;
+#open-new-tab:hover {
+    background-color: #0055ff;
+    transform: scale(1.1);
 }
 
-.button-container {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
+/* Estilo do Popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #222;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px 5px #00f;
+    z-index: 1002;
+    width: 300px;
+    text-align: center;
 }
 
-.button-container button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: var(--c-button);
-  color: var(--c-text);
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+.popup-content {
+    text-align: center;
 }
 
-.button-container button:hover {
-  background-color: var(--c-button-hover);
-  transform: scale(1.05);
+.close-popup {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    color: #fff;
 }
 
-/* Footer */
-#foot {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: var(--c-header);
-  color: var(--c-text);
-  padding: 10px;
-  text-align: center;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 400;
-  z-index: 1000;
+input[type="number"] {
+    width: 80%;
+    padding: 10px;
+    margin: 15px 0;
+    border-radius: 5px;
+    border: 2px solid #00f;
+    background-color: #000;
+    color: #fff;
+}
+
+/* Sobreposição para o popup */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
 }
 
 /* Responsividade */
+@media (max-width: 1024px) {
+    .iframes-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
 
-/* Smartphones (até 576px) */
-@media (max-width: 576px) {
-  #nav {
-    flex-direction: column;
-    align-items: flex-start;
-    height: auto;
-  }
+@media (max-width: 768px) {
+    .iframes-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 
-  .nav-right {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+@media (max-width: 480px) {
+    .iframes-container {
+        grid-template-columns: 1fr;
+    }
+}
 
-  .nav-right ul {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .nav-right a {
+/* Melhorar a aparência dos botões em dispositivos móveis */
+button {
+    padding: 15px;
     font-size: 16px;
-    padding: 10px 0;
-  }
-
-  #sidebar {
-    width: 100%;
-    height: auto;
-  }
-
-  #container {
-    flex-direction: column;
-  }
-
-  #content-frame {
-    height: 300px;
-  }
 }
 
-/* Tablets (577px a 768px) */
-@media (min-width: 577px) and (max-width: 768px) {
-  #nav {
-    padding: 10px 15px;
-  }
-
-  .nav-left a {
-    font-size: 20px;
-  }
-
-  .nav-right a {
+input[type="number"] {
     font-size: 16px;
-  }
-
-  #sidebar {
-    width: 200px;
-  }
-
-  #content-frame {
-    height: 400px;
-  }
-}
-
-/* Pequenos Notebooks (769px a 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-  #nav {
-    padding: 10px 20px;
-  }
-
-  .nav-left a {
-    font-size: 22px;
-  }
-
-  .nav-right a {
-    font-size: 17px;
-  }
-
-  #sidebar {
-    width: 220px;
-  }
-
-  #content-frame {
-    height: 500px;
-  }
-}
-
-/* Notebooks e Monitores Médios (1025px a 1440px) */
-@media (min-width: 1025px) and (max-width: 1440px) {
-  #nav {
-    padding: 15px 25px;
-  }
-
-  .nav-left a {
-    font-size: 24px;
-  }
-
-  .nav-right a {
-    font-size: 18px;
-  }
-
-  #sidebar {
-    width: 250px;
-  }
-
-  #content-frame {
-    height: 600px;
-  }
-}
-
-/* Monitores Grandes (acima de 1440px) */
-@media (min-width: 1441px) {
-  #nav {
-    padding: 20px 30px;
-  }
-
-  .nav-left a {
-    font-size: 26px;
-  }
-
-  .nav-right a {
-    font-size: 20px;
-  }
-
-  #sidebar {
-    width: 300px;
-  }
-
-  #content-frame {
-    height: 700px;
-  }
 }
