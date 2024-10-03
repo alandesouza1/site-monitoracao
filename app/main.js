@@ -2,13 +2,13 @@
 var sites1 = [
     { name: "Google", url: "https://www.google.com" },
     { name: "YouTube", url: "https://www.youtube.com" },
-    // Continue até 12 links
+    // Continue até 12 links com seus nomes e URLs
 ];
 
 var sites2 = [
     { name: "GitHub", url: "https://www.github.com" },
     { name: "Stack Overflow", url: "https://stackoverflow.com" },
-    // Continue até 12 links
+    // Continue até 12 links com seus nomes e URLs
 ];
 
 // Agrupa todas as listas `sites` em um único array `siteLists`
@@ -19,7 +19,7 @@ let currentSiteListIndex = 0;
 let intervalTime = 5000;
 let interval;
 let isPaused = false;
-let zoomLevel = 0.8; // Zoom fixo inicial para todos os iframes
+let zoomLevel = 1; // Zoom fixo inicial para todos os iframes
 
 document.addEventListener("DOMContentLoaded", function() {
     const linkList = document.getElementById('link-list');
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const openNewTabBtn = document.getElementById('open-new-tab');
     const pauseResumeBtn = document.getElementById('pause-resume');
     const adjustTimeBtn = document.getElementById('adjust-time');
+    const adjustZoomBtn = document.getElementById('adjust-zoom');
     const prevGroupBtn = document.getElementById('previous-group');
     const nextGroupBtn = document.getElementById('next-group');
 
@@ -84,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function pauseInterval() {
         clearInterval(interval);
         isPaused = true;
-        pauseResumeBtn.textContent = '▶️ Retomar'; // Altera o texto do botão para "Retomar"
+        pauseResumeBtn.textContent = '▶️ Retomar';
     }
 
     // Função para retomar o temporizador
@@ -92,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (isPaused) {
             isPaused = false;
             startInterval();
-            pauseResumeBtn.textContent = '⏸ Pausar'; // Altera o texto do botão para "Pausar"
+            pauseResumeBtn.textContent = '⏸ Pausar';
         }
     }
 
@@ -117,11 +118,24 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Evento para ajustar o zoom dos iframes
+    adjustZoomBtn.addEventListener('click', () => {
+        const newZoom = prompt('Digite o novo nível de zoom (ex: 1 para 100%, 0.5 para 50%):');
+        if (newZoom && !isNaN(newZoom) && newZoom > 0) {
+            zoomLevel = parseFloat(newZoom);
+            // Reaplica o zoom a todos os iframes
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.style.transform = `scale(${zoomLevel})`;
+                iframe.style.transformOrigin = 'top left';
+            });
+        }
+    });
+
     // Função para atualizar o destaque na lista lateral
     function updateActiveListItem() {
         const listItems = document.querySelectorAll('#link-list li');
         listItems.forEach((item, index) => {
-            // Adiciona ou remove a classe de destaque com base no índice atual
             if (index === currentSiteListIndex) {
                 item.classList.add('active-site');
             } else {
@@ -141,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function() {
     siteLists.forEach((siteList, index) => {
         const li = document.createElement('li');
         const button = document.createElement('button');
-        button.textContent = `Grupo ${index + 1}`; // Exibe o nome de cada grupo
+        button.textContent = siteList[0].name; // Exibe o nome do primeiro site do grupo
 
         button.addEventListener('click', () => {
             pauseInterval(); // Pausar o temporizador ao mudar manualmente
@@ -156,13 +170,13 @@ document.addEventListener("DOMContentLoaded", function() {
     // Eventos para os botões de navegação (Anterior/Próximo)
     prevGroupBtn.addEventListener('click', () => {
         pauseInterval(); // Pausar o temporizador ao mudar manualmente
-        currentSiteListIndex = (currentSiteListIndex - 1 + siteLists.length) % siteLists.length; // Navega para o grupo anterior
+        currentSiteListIndex = (currentSiteListIndex - 1 + siteLists.length) % siteLists.length;
         initializeIframes(siteLists[currentSiteListIndex]);
     });
 
     nextGroupBtn.addEventListener('click', () => {
         pauseInterval(); // Pausar o temporizador ao mudar manualmente
-        currentSiteListIndex = (currentSiteListIndex + 1) % siteLists.length; // Navega para o próximo grupo
+        currentSiteListIndex = (currentSiteListIndex + 1) % siteLists.length;
         initializeIframes(siteLists[currentSiteListIndex]);
     });
 
