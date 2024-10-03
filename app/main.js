@@ -1,4 +1,4 @@
-// Suponha que você tenha 13 listas de sites como esta (substitua pelos seus próprios dados)
+// Lista de sites como exemplo (substitua pelos seus sites)
 var sites1 = [
     { name: "Google", url: "https://www.google.com" },
     { name: "YouTube", url: "https://www.youtube.com" },
@@ -11,16 +11,9 @@ var sites2 = [
     // Continue até 12 links
 ];
 
-// Continue para suas outras listas de sites até sites13
-var sites13 = [
-    { name: "Reddit", url: "https://www.reddit.com" },
-    { name: "Twitter", url: "https://www.twitter.com" },
-    // Continue até 12 links
-];
-
 // Agrupa todas as listas `sites` em um único array `siteLists`
 const siteLists = [
-    sites1, sites2, /* ..., */ sites13
+    sites1, sites2
 ];
 
 // Variáveis de controle de estado
@@ -28,24 +21,27 @@ let currentSiteListIndex = 0; // Índice da lista de sites atual
 let intervalTime = 5000; // Intervalo padrão de 5 segundos para mudar os links
 let interval;
 let isPaused = false;
+let zoomLevel = 1; // Nível de zoom padrão
 
 document.addEventListener("DOMContentLoaded", function() {
     const linkList = document.getElementById('link-list');
     const iframesContainer = document.querySelector('.iframes-container');
-    
-    // Seleciona os botões já criados
-    const pauseResumeBtn = document.getElementById('pause-resume'); // Botão pausar/retomar
-    const adjustTimeBtn = document.getElementById('adjust-time'); // Botão ajustar tempo
-    
+    const openNewTabBtn = document.getElementById('open-new-tab');
+    const pauseResumeBtn = document.getElementById('pause-resume');
+    const adjustTimeBtn = document.getElementById('adjust-time');
+    const adjustZoomBtn = document.getElementById('adjust-zoom');
+    const prevGroupBtn = document.getElementById('previous-group');
+    const nextGroupBtn = document.getElementById('next-group');
+
     // Inicializa a lista de iframes para a lista de sites atual
     function initializeIframes(siteList) {
-        iframesContainer.innerHTML = ''; // Limpar os iframes anteriores
+        iframesContainer.innerHTML = ''; // Limpar iframes anteriores
 
         // Cria 12 iframes com base na lista atual
         siteList.forEach((site) => {
             const wrapper = document.createElement('div');
             wrapper.className = 'iframe-wrapper';
-            
+
             const iframe = document.createElement('iframe');
             iframe.src = site.url;
             iframe.dataset.url = site.url;
@@ -53,14 +49,31 @@ document.addEventListener("DOMContentLoaded", function() {
             wrapper.appendChild(iframe);
             iframesContainer.appendChild(wrapper);
 
+            // Adiciona efeito de hover
+            iframe.addEventListener('mouseenter', () => {
+                iframe.style.borderColor = '#0055ff';
+                iframe.style.cursor = 'pointer';
+            });
+
+            iframe.addEventListener('mouseleave', () => {
+                iframe.style.borderColor = '#00f';
+            });
+
             // Expande o iframe com clique único
             iframe.addEventListener('click', () => {
                 iframe.classList.toggle('fullscreen');
+                if (iframe.classList.contains('fullscreen')) {
+                    openNewTabBtn.style.display = 'block';
+                    openNewTabBtn.dataset.url = iframe.dataset.url; // Armazena a URL para nova aba
+                } else {
+                    openNewTabBtn.style.display = 'none';
+                }
             });
 
             // Sai da tela cheia com duplo clique
             iframe.addEventListener('dblclick', () => {
                 iframe.classList.remove('fullscreen');
+                openNewTabBtn.style.display = 'none';
             });
         });
 
@@ -113,6 +126,25 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Evento de clique para ajustar o zoom dos iframes
+    adjustZoomBtn.addEventListener('click', () => {
+        const newZoom = prompt('Digite o nível de zoom desejado (por exemplo, 0.5 para 50%):');
+        if (newZoom && !isNaN(newZoom) && newZoom > 0) {
+            zoomLevel = parseFloat(newZoom);
+            adjustIframesZoom(zoomLevel);
+        }
+    });
+
+    // Ajusta o zoom de todos os iframes
+    function adjustIframesZoom(zoom) {
+        const iframes = document.querySelectorAll('.iframes-container iframe');
+        iframes.forEach(iframe => {
+            iframe.style.transform = `scale(${zoom})`;
+            iframe.style.width = `${100 / zoom}%`; // Ajusta a largura para manter a responsividade
+            iframe.style.height = `${100 / zoom}%`; // Ajusta a altura para manter a responsividade
+        });
+    }
+
     // Função para atualizar o destaque na lista lateral
     function updateActiveListItem() {
         const listItems = document.querySelectorAll('#link-list li');
@@ -125,6 +157,13 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
+    // Evento de clique para abrir o iframe expandido em nova aba
+    openNewTabBtn.addEventListener('click', () => {
+        if (openNewTabBtn.dataset.url) {
+            window.open(openNewTabBtn.dataset.url, '_blank');
+        }
+    });
 
     // Cria a lista de links para alternar entre as diferentes listas de sites
     siteLists.forEach((siteList, index) => {
@@ -140,6 +179,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
         li.appendChild(button);
         linkList.appendChild(li);
+    });
+
+    // Eventos para os botões de navegação (Anterior/Próximo
+
+
+// Eventos para os botões de navegação (Anterior/Próximo)
+    prevGroupBtn.addEventListener('click', () => {
+        pauseInterval(); // Pausar o temporizador ao mudar manualmente
+        currentSiteListIndex = (currentSiteListIndex - 1 + siteLists.length) % siteLists.length; // Navega para o grupo anterior
+        initializeIframes(siteLists[currentSiteListIndex]);
+    });
+
+    nextGroupBtn.addEventListener('click', () => {
+        pauseInterval(); // Pausar o temporizador ao mudar manualmente
+        currentSiteListIndex = (currentSiteListIndex + 1) % siteLists.length; // Navega para o próximo grupo
+        initializeIframes(siteLists[currentSiteListIndex]);
     });
 
     // Inicializa a primeira lista de iframes
