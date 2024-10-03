@@ -13,11 +13,11 @@ body {
     overflow: hidden;
 }
 
-/* Barra lateral mais fina */
+/* Barra lateral */
 .sidebar {
-    width: 15%; /* Reduzido para 15% */
+    width: 15%; /* Ajuste da largura da barra lateral */
     background-color: #1e1e1e;
-    padding: 10px; /* Reduzido o padding */
+    padding: 10px;
     overflow-y: auto;
 }
 
@@ -28,57 +28,66 @@ body {
 }
 
 .sidebar li {
-    margin: 5px 0; /* Espaçamento reduzido */
+    margin: 5px 0;
 }
 
-.sidebar a {
+.sidebar button {
     color: #00f;
-    text-decoration: none;
-    padding: 8px; /* Reduzido o padding */
+    background: none;
+    border: none;
+    padding: 8px;
     display: block;
     border-radius: 5px;
-    font-size: 14px; /* Fonte menor */
+    font-size: 14px;
     transition: background-color 0.3s, transform 0.2s;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
 }
 
-.sidebar a:hover {
+.sidebar button:hover {
     background-color: #333;
     transform: scale(1.05);
 }
 
-/* Estilo dos botões de controle */
-.controls {
-    margin-top: 10px; /* Reduzido o espaçamento */
+/* Classe para destacar o item ativo na lista lateral */
+.active-site {
+    background-color: #0055ff;
+    color: #fff;
+    font-weight: bold;
+    transform: scale(1.1);
+    transition: all 0.3s ease-in-out;
 }
 
-button {
+/* Controles */
+.controls {
+    margin-top: 20px;
+}
+
+.controls button {
     background-color: #00f;
     color: #fff;
     border: none;
-    padding: 8px 10px; /* Reduzido o padding */
-    margin: 5px 0; /* Reduzido o espaçamento */
+    padding: 8px 10px;
+    margin: 5px 0;
     cursor: pointer;
     border-radius: 8px;
     transition: background-color 0.3s, transform 0.2s;
     width: 100%;
-    font-size: 12px; /* Fonte menor */
+    font-size: 12px;
 }
 
-button:hover {
+.controls button:hover {
     background-color: #0055ff;
     transform: scale(1.05);
 }
 
-#timer-info {
-    margin-top: 10px; /* Reduzido o espaçamento */
-    font-weight: bold;
-}
-
 /* Container de Iframes */
 .iframes-container {
-    width: 85%; /* Ajustado para o novo tamanho da barra lateral */
+    width: 85%; /* Ajuste para o restante da tela */
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr); /* 4 colunas */
+    grid-template-rows: repeat(3, 1fr); /* 3 linhas */
     grid-gap: 20px;
     padding: 20px;
 }
@@ -102,36 +111,6 @@ iframe {
 
 iframe:hover {
     box-shadow: 0px 0px 15px 5px #00f;
-}
-
-/* Destaque do iframe ativo */
-.iframe-active {
-    border: 4px solid #ff0;
-    animation: highlight 1s infinite alternate;
-}
-
-/* Animação de destaque do iframe ativo */
-@keyframes highlight {
-    0% { box-shadow: 0px 0px 10px 5px #00f; }
-    100% { box-shadow: 0px 0px 20px 10px #ff0; }
-}
-
-/* Barra de progresso */
-.progress-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 4px;
-    background: #ff0;
-    width: 0;
-    border-radius: 5px;
-    transition: width 0.5s linear;
-}
-
-/* Título do site */
-.site-title {
-    margin: 5px 0;
-    font-weight: bold;
 }
 
 /* Iframe em tela cheia */
@@ -164,83 +143,4 @@ iframe.fullscreen {
 #open-new-tab:hover {
     background-color: #0055ff;
     transform: scale(1.1);
-}
-
-/* Estilo do Popup */
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #222;
-    padding: 20px; /* Reduzido o padding */
-    border-radius: 10px;
-    box-shadow: 0 0 20px 5px #00f;
-    z-index: 1002;
-    width: 250px; /* Reduzido o tamanho */
-    text-align: center;
-}
-
-.popup-content {
-    text-align: center;
-}
-
-.close-popup {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-    color: #fff;
-}
-
-input[type="number"] {
-    width: 80%;
-    padding: 8px; /* Reduzido o padding */
-    margin: 10px 0; /* Reduzido o espaçamento */
-    border-radius: 5px;
-    border: 2px solid #00f;
-    background-color: #000;
-    color: #fff;
-}
-
-/* Sobreposição para o popup */
-.overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-}
-
-/* Responsividade */
-@media (max-width: 1024px) {
-    .iframes-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .iframes-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .iframes-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Melhorar a aparência dos botões em dispositivos móveis */
-button {
-    padding: 10px;
-    font-size: 14px;
-}
-
-input[type="number"] {
-    font-size: 14px;
 }
