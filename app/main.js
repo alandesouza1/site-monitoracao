@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // Aplica zoom fixo inicial
             iframe.style.transform = `scale(${zoomLevel})`;
+            iframe.style.transformOrigin = 'top left';
 
             wrapper.appendChild(iframe);
             iframesContainer.appendChild(wrapper);
@@ -61,10 +62,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
             // Sai da tela cheia ao clicar duas vezes
-            iframe.addEventListener('dblclick', () => {
-                iframe.classList
-
-// Sai da tela cheia ao clicar duas vezes
             iframe.addEventListener('dblclick', () => {
                 iframe.classList.remove('fullscreen');
                 openNewTabBtn.style.display = 'none';
@@ -144,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function() {
     siteLists.forEach((siteList, index) => {
         const li = document.createElement('li');
         const button = document.createElement('button');
-        button.textContent = `Grupo ${index + 1}`; // Exibe o nome de cada grupo
+        button.textContent = siteList[0].name; // Exibe o nome do primeiro site do grupo
 
         button.addEventListener('click', () => {
             pauseInterval(); // Pausar o temporizador ao mudar manualmente
