@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const linkList = document.getElementById('link-list');
     const iframesContainer = document.querySelector('.iframes-container');
     const openNewTabBtn = document.getElementById('open-new-tab');
+    const returnToMainBtn = document.getElementById('return-to-main');
     const pauseResumeBtn = document.getElementById('pause-resume');
     const adjustTimeBtn = document.getElementById('adjust-time');
     const adjustZoomBtn = document.getElementById('adjust-zoom');
@@ -54,20 +55,13 @@ document.addEventListener("DOMContentLoaded", function() {
             wrapper.appendChild(iframe);
             iframesContainer.appendChild(wrapper);
 
-            // Configurar zoom para o conteúdo do iframe
-            iframe.onload = function () {
-                iframe.contentWindow.document.body.style.transform = `scale(${zoomLevel})`;
-                iframe.contentWindow.document.body.style.transformOrigin = '0 0';
-                iframe.contentWindow.document.body.style.width = `${100 / zoomLevel}%`;
-                iframe.contentWindow.document.body.style.height = `${100 / zoomLevel}%`;
-            };
-
             // Expande o iframe após hover por 3 segundos
             iframe.addEventListener('mouseover', () => {
                 hoverMessage.style.display = 'block';
                 expandTimeout = setTimeout(() => {
                     iframe.classList.add('fullscreen');
-                    openNewTabBtn.style.display = 'block'; // Mostra o botão ao expandir
+                    openNewTabBtn.style.display = 'block'; // Mostra o botão "Abrir em Nova Aba"
+                    returnToMainBtn.style.display = 'block'; // Mostra o botão "Voltar à Tela Principal"
                     openNewTabBtn.dataset.url = iframe.dataset.url; // Armazena a URL para nova aba
                     hoverMessage.style.display = 'none'; // Esconde a mensagem de dica após expansão
                 }, 3000); // 3 segundos
@@ -83,10 +77,27 @@ document.addEventListener("DOMContentLoaded", function() {
             iframe.addEventListener('dblclick', () => {
                 iframe.classList.remove('fullscreen');
                 openNewTabBtn.style.display = 'none'; // Esconde o botão ao voltar ao normal
+                returnToMainBtn.style.display = 'none'; // Esconde o botão "Voltar à Tela Principal"
             });
         });
 
         updateActiveListItem();
+    }
+
+    // Função para aplicar zoom ao conteúdo do iframe
+    function applyZoomToIframeContent() {
+        const iframes = document.querySelectorAll('iframe');
+        iframes.forEach(iframe => {
+            // Verifica se o conteúdo do iframe está carregado corretamente antes de ajustar o zoom
+            iframe.onload = () => {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    iframeDoc.body.style.zoom = zoomLevel;
+                } catch (e) {
+                    console.error('Erro ao aplicar zoom ao iframe:', e);
+                }
+            };
+        });
     }
 
     // Função para iniciar o temporizador
@@ -139,33 +150,24 @@ document.addEventListener("DOMContentLoaded", function() {
         const newZoom = prompt('Digite o novo nível de zoom (ex: 1 para 100%, 0.5 para 50%):');
         if (newZoom && !isNaN(newZoom) && newZoom > 0) {
             zoomLevel = parseFloat(newZoom);
-            // Reaplica o zoom ao conteúdo dos iframes
-            const iframes = document.querySelectorAll('iframe');
-            iframes.forEach(iframe => {
-                iframe.contentWindow.document.body.style.transform = `scale(${zoomLevel})`;
-                iframe.contentWindow.document.body.style.transformOrigin = '0 0';
-                iframe.contentWindow.document.body.style.width = `${100 / zoomLevel}%`;
-                iframe.contentWindow.document.body.style.height = `${100 / zoomLevel}%`;
-            });
+            applyZoomToIframeContent();
         }
     });
-
-    // Função para atualizar o destaque na lista lateral
-    function updateActiveListItem() {
-        const listItems = document.querySelectorAll('#link-list li');
-        listItems.forEach((item, index) => {
-            if (index === currentSiteListIndex) {
-                item.classList.add('active-site');
-            } else {
-                item.classList.remove('active-site');
-            }
-        });
-    }
 
     // Evento de clique para abrir o iframe expandido em nova aba
     openNewTabBtn.addEventListener('click', () => {
         if (openNewTabBtn.dataset.url) {
             window.open(openNewTabBtn.dataset.url, '_blank');
+        }
+    });
+
+    // Evento de clique para retornar à tela principal
+    returnToMainBtn.addEventListener('click', () => {
+        const fullscreenIframe = document.querySelector('iframe.fullscreen');
+        if (fullscreenIframe) {
+            fullscreenIframe.classList.remove('fullscreen');
+            openNewTabBtn.style.display = 'none';
+            returnToMainBtn.style.display = 'none';
         }
     });
 
@@ -200,6 +202,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Inicializa a primeira lista de iframes
     initializeIframes(siteLists[currentSiteListIndex]);
+    applyZoomToIframeContent();
 
     // Inicia o temporizador automaticamente
     startInterval();
