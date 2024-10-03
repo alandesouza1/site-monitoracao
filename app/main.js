@@ -28,12 +28,10 @@ let currentSiteListIndex = 0; // Índice da lista de sites atual
 let intervalTime = 5000; // Intervalo padrão de 5 segundos para mudar os links
 let interval;
 let isPaused = false;
-let currentExpandedIframeUrl = ''; // Armazena a URL do iframe expandido
 
 document.addEventListener("DOMContentLoaded", function() {
     const linkList = document.getElementById('link-list');
     const iframesContainer = document.querySelector('.iframes-container');
-    const openNewTabBtn = document.getElementById('open-new-tab');
     
     // Seleciona os botões já criados
     const pauseResumeBtn = document.getElementById('pause-resume'); // Botão pausar/retomar
@@ -55,20 +53,14 @@ document.addEventListener("DOMContentLoaded", function() {
             wrapper.appendChild(iframe);
             iframesContainer.appendChild(wrapper);
 
-            // Adiciona evento para expandir o iframe após 3 segundos de hover
-            let hoverTimeout;
-            iframe.addEventListener('mouseenter', () => {
-                hoverTimeout = setTimeout(() => {
-                    iframe.classList.add('fullscreen');
-                    currentExpandedIframeUrl = site.url; // Armazena a URL do iframe expandido
-                    showOpenTabButton(); // Mostrar o botão "Abrir em Nova Aba"
-                }, 3000); // 3 segundos para expandir
+            // Expande o iframe com clique único
+            iframe.addEventListener('click', () => {
+                iframe.classList.toggle('fullscreen');
             });
 
-            iframe.addEventListener('mouseleave', () => {
-                clearTimeout(hoverTimeout);
+            // Sai da tela cheia com duplo clique
+            iframe.addEventListener('dblclick', () => {
                 iframe.classList.remove('fullscreen');
-                hideOpenTabButton(); // Esconder o botão "Abrir em Nova Aba"
             });
         });
 
@@ -99,23 +91,6 @@ document.addEventListener("DOMContentLoaded", function() {
             pauseResumeBtn.textContent = '⏸ Pausar'; // Altera o texto do botão para "Pausar"
         }
     }
-
-    // Função para mostrar o botão "Abrir em Nova Aba"
-    function showOpenTabButton() {
-        openNewTabBtn.style.display = 'block';
-    }
-
-    // Função para esconder o botão "Abrir em Nova Aba"
-    function hideOpenTabButton() {
-        openNewTabBtn.style.display = 'none';
-    }
-
-    // Evento de clique para abrir o iframe expandido em uma nova aba
-    openNewTabBtn.addEventListener('click', () => {
-        if (currentExpandedIframeUrl) {
-            window.open(currentExpandedIframeUrl, '_blank');
-        }
-    });
 
     // Evento de clique para pausar ou retomar o temporizador
     pauseResumeBtn.addEventListener('click', () => {
@@ -152,11 +127,11 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Cria a lista de links para alternar entre as diferentes listas de sites
-    siteLists.forEach((_, index) => {
+    siteLists.forEach((siteList, index) => {
         const li = document.createElement('li');
         const button = document.createElement('button');
-        button.textContent = `Site ${index + 1}`;
-        
+        button.textContent = `Site ${index + 1}`; // Exibe o nome de cada site
+
         button.addEventListener('click', () => {
             pauseInterval(); // Pausar o temporizador ao mudar manualmente
             currentSiteListIndex = index;
