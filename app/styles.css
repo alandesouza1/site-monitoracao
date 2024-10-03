@@ -15,7 +15,7 @@ body {
 
 /* Barra lateral */
 .sidebar {
-    width: 15%; /* Ajuste da largura da barra lateral */
+    width: 15%; 
     background-color: #1e1e1e;
     padding: 10px;
     overflow-y: auto;
@@ -32,7 +32,7 @@ body {
 }
 
 .sidebar button {
-    color: #fff; /* Texto branco */
+    color: #fff; 
     background: none;
     border: none;
     padding: 8px;
@@ -84,10 +84,10 @@ body {
 
 /* Container de Iframes */
 .iframes-container {
-    width: 85%; /* Ajuste para o restante da tela */
+    width: 85%; 
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 colunas */
-    grid-template-rows: repeat(3, 1fr); /* 3 linhas */
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     grid-gap: 10px;
     padding: 10px;
 }
@@ -95,19 +95,17 @@ body {
 /* Estilo dos iframes */
 .iframe-wrapper {
     position: relative;
-    text-align: center;
     overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
 iframe {
     width: 100%;
-    height: 200px;
+    height: 100%;
     border: 2px solid #00f;
     border-radius: 10px;
     transition: transform 0.3s, box-shadow 0.3s, border-color 0.5s;
     cursor: pointer;
-    pointer-events: none; /* Desativa a interação */
 }
 
 /* Efeito de animação ao passar o mouse */
@@ -126,7 +124,7 @@ iframe.fullscreen {
     height: 100%;
     z-index: 1000;
     border: none;
-    pointer-events: auto; /* Ativa a interação ao expandir */
+    pointer-events: auto;
 }
 
 /* Botão para abrir em nova aba */
