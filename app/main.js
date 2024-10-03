@@ -1,21 +1,21 @@
-// Suponha que você tenha 13 listas de sites como esta (substitua pelos seus próprios dados)
+// Suponha que você tenha 13 listas de sites como esta:
 var sites1 = [
     { name: "Google", url: "https://www.google.com" },
     { name: "YouTube", url: "https://www.youtube.com" },
-    // Continue com os 12 links para esta lista
+    // Continue até 12 itens para esta lista
 ];
 
 var sites2 = [
     { name: "GitHub", url: "https://www.github.com" },
     { name: "Stack Overflow", url: "https://stackoverflow.com" },
-    // Continue com os 12 links para esta lista
+    // Continue até 12 itens para esta lista
 ];
 
 // Continue para suas outras listas de sites até sites13
 var sites13 = [
     { name: "Reddit", url: "https://www.reddit.com" },
     { name: "Twitter", url: "https://www.twitter.com" },
-    // Continue com os 12 links para esta lista
+    // Continue até 12 itens para esta lista
 ];
 
 // Agrupa todas as listas `sites` em um único array `siteLists`
@@ -40,6 +40,27 @@ document.addEventListener("DOMContentLoaded", function() {
         iframesContainer.innerHTML = ''; // Limpar os iframes anteriores
         linkList.innerHTML = ''; // Limpar a lista de links anterior
 
+        // Cria os links na lista lateral
+        siteList.forEach((site, index) => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = site.url;
+            a.textContent = site.name;
+            a.target = '_blank';
+
+            // Destacar iframe ao clicar no link
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentIndex = index;
+                updateIframes(siteLists[currentSiteListIndex]);
+                pauseInterval();
+            });
+
+            li.appendChild(a);
+            linkList.appendChild(li);
+        });
+
+        // Cria os iframes
         siteList.forEach((site) => {
             // Cria o wrapper do iframe
             const wrapper = document.createElement('div');
@@ -133,19 +154,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     startInterval(); // Inicia o temporizador
-
-    // Controles para alternar entre listas de sites
-    const switchButtonsContainer = document.createElement('div');
-    switchButtonsContainer.className = 'switch-buttons';
-
-    siteLists.forEach((_, index) => {
-        const button = document.createElement('button');
-        button.textContent = `Lista ${index + 1}`;
-        button.addEventListener('click', () => switchSiteList(index));
-        switchButtonsContainer.appendChild(button);
-    });
-
-    document.body.appendChild(switchButtonsContainer);
 
     // Pausar/Retomar o temporizador
     function pauseInterval() {
