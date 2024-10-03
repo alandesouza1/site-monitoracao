@@ -3,25 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iframes Dinâmicos com Destaque e Expansão</title>
+    <title>Iframes Dinâmicos com Ajuste</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="sidebar">
             <ul id="link-list">
-                <!-- A lista de links será populada pelo JavaScript -->
+                <!-- Lista de grupos de sites será populada via JS -->
             </ul>
-            <!-- Controles de Timer -->
+            <!-- Controles adicionais -->
             <div class="controls">
+                <button id="previous-group">⬅️ Anterior</button>
+                <button id="next-group">➡️ Próximo</button>
                 <button id="pause-resume">⏸ Pausar</button>
                 <button id="adjust-time">⏱ Ajustar Tempo</button>
+                <button id="adjust-zoom">🔍 Ajustar Zoom</button>
                 <p id="timer-info">Tempo de troca: <span id="interval-time">5</span> segundos</p>
             </div>
         </div>
         <div class="iframes-container">
-            <!-- Todos os 12 iframes serão adicionados pelo JavaScript -->
+            <!-- Iframes serão adicionados pelo JS -->
         </div>
+        <!-- Botão para abrir em nova aba ao expandir -->
+        <button id="open-new-tab" style="display: none;">🌐 Abrir em Nova Aba</button>
     </div>
     <script src="script.js"></script>
 </body>
