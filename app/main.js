@@ -12,16 +12,14 @@ var sites2 = [
 ];
 
 // Agrupa todas as listas `sites` em um único array `siteLists`
-const siteLists = [
-    sites1, sites2
-];
+const siteLists = [sites1, sites2];
 
 // Variáveis de controle de estado
-let currentSiteListIndex = 0; // Índice da lista de sites atual
-let intervalTime = 5000; // Intervalo padrão de 5 segundos para mudar os links
+let currentSiteListIndex = 0;
+let intervalTime = 5000;
 let interval;
 let isPaused = false;
-let zoomLevel = 1; // Nível de zoom padrão
+let zoomLevel = 0.8; // Zoom fixo inicial para todos os iframes
 
 document.addEventListener("DOMContentLoaded", function() {
     const linkList = document.getElementById('link-list');
@@ -29,7 +27,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const openNewTabBtn = document.getElementById('open-new-tab');
     const pauseResumeBtn = document.getElementById('pause-resume');
     const adjustTimeBtn = document.getElementById('adjust-time');
-    const adjustZoomBtn = document.getElementById('adjust-zoom');
     const prevGroupBtn = document.getElementById('previous-group');
     const nextGroupBtn = document.getElementById('next-group');
 
@@ -46,20 +43,13 @@ document.addEventListener("DOMContentLoaded", function() {
             iframe.src = site.url;
             iframe.dataset.url = site.url;
 
+            // Aplica zoom fixo inicial
+            iframe.style.transform = `scale(${zoomLevel})`;
+
             wrapper.appendChild(iframe);
             iframesContainer.appendChild(wrapper);
 
-            // Adiciona efeito de hover
-            iframe.addEventListener('mouseenter', () => {
-                iframe.style.borderColor = '#0055ff';
-                iframe.style.cursor = 'pointer';
-            });
-
-            iframe.addEventListener('mouseleave', () => {
-                iframe.style.borderColor = '#00f';
-            });
-
-            // Expande o iframe com clique único
+            // Expande o iframe ao clicar uma vez
             iframe.addEventListener('click', () => {
                 iframe.classList.toggle('fullscreen');
                 if (iframe.classList.contains('fullscreen')) {
@@ -70,7 +60,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             });
 
-            // Sai da tela cheia com duplo clique
+            // Sai da tela cheia ao clicar duas vezes
+            iframe.addEventListener('dblclick', () => {
+                iframe.classList
+
+// Sai da tela cheia ao clicar duas vezes
             iframe.addEventListener('dblclick', () => {
                 iframe.classList.remove('fullscreen');
                 openNewTabBtn.style.display = 'none';
@@ -126,25 +120,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Evento de clique para ajustar o zoom dos iframes
-    adjustZoomBtn.addEventListener('click', () => {
-        const newZoom = prompt('Digite o nível de zoom desejado (por exemplo, 0.5 para 50%):');
-        if (newZoom && !isNaN(newZoom) && newZoom > 0) {
-            zoomLevel = parseFloat(newZoom);
-            adjustIframesZoom(zoomLevel);
-        }
-    });
-
-    // Ajusta o zoom de todos os iframes
-    function adjustIframesZoom(zoom) {
-        const iframes = document.querySelectorAll('.iframes-container iframe');
-        iframes.forEach(iframe => {
-            iframe.style.transform = `scale(${zoom})`;
-            iframe.style.width = `${100 / zoom}%`; // Ajusta a largura para manter a responsividade
-            iframe.style.height = `${100 / zoom}%`; // Ajusta a altura para manter a responsividade
-        });
-    }
-
     // Função para atualizar o destaque na lista lateral
     function updateActiveListItem() {
         const listItems = document.querySelectorAll('#link-list li');
@@ -169,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
     siteLists.forEach((siteList, index) => {
         const li = document.createElement('li');
         const button = document.createElement('button');
-        button.textContent = `Site ${index + 1}`; // Exibe o nome de cada site
+        button.textContent = `Grupo ${index + 1}`; // Exibe o nome de cada grupo
 
         button.addEventListener('click', () => {
             pauseInterval(); // Pausar o temporizador ao mudar manualmente
@@ -181,10 +156,7 @@ document.addEventListener("DOMContentLoaded", function() {
         linkList.appendChild(li);
     });
 
-    // Eventos para os botões de navegação (Anterior/Próximo
-
-
-// Eventos para os botões de navegação (Anterior/Próximo)
+    // Eventos para os botões de navegação (Anterior/Próximo)
     prevGroupBtn.addEventListener('click', () => {
         pauseInterval(); // Pausar o temporizador ao mudar manualmente
         currentSiteListIndex = (currentSiteListIndex - 1 + siteLists.length) % siteLists.length; // Navega para o grupo anterior
