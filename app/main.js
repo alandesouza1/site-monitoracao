@@ -1,53 +1,128 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const customLinksDropdown = document.getElementById("custom-links-dropdown");
-    const addLinkBtn = document.getElementById("addLinkBtn");
+document.addEventListener("DOMContentLoaded", function() {
+    const linkList = document.getElementById('link-list');
+    const iframesContainer = document.querySelector('.iframes-container');
+    const openNewTabBtn = document.getElementById('open-new-tab');
+    
+    // Inicializa a lista de iframes para a lista de sites atual
+    function initializeIframes(siteList) {
+        iframesContainer.innerHTML = ''; // Limpar os iframes anteriores
+        linkList.innerHTML = ''; // Limpar a lista de links anterior
 
-    // Função para adicionar links personalizados ao dropdown de Links Personalizados
-    function addCustomLink(linkName, linkUrl) {
-        const linkContainer = document.createElement("div"); // Contêiner para o link e botão de exclusão
-        linkContainer.style.display = "flex";
-        linkContainer.style.alignItems = "center";
+        siteList.forEach((site) => {
+            // Cria o wrapper do iframe
+            const wrapper = document.createElement('div');
+            wrapper.className = 'iframe-wrapper';
+            
+            // Título do site
+            const title = document.createElement('div');
+            title.className = 'site-title';
+            title.textContent = site.name;
 
-        const customLink = document.createElement("a");
-        customLink.href = linkUrl;
-        customLink.textContent = linkName;
-        customLink.target = "_blank"; // Abre o link em uma nova aba
-        customLink.style.flexGrow = "1"; // O link ocupará o espaço disponível
+            // Iframe
+            const iframe = document.createElement('iframe');
+            iframe.src = site.url;
+            iframe.dataset.url = site.url;
 
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Excluir";
-        deleteButton.style.marginLeft = "10px";
-        deleteButton.style.backgroundColor = "#ff0000";
-        deleteButton.style.color = "#fff";
-        deleteButton.style.border = "none";
-        deleteButton.style.cursor = "pointer";
+            // Barra de progresso
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            wrapper.appendChild(progressBar);
 
-        // Função para excluir o link
-        deleteButton.addEventListener("click", function () {
-            linkContainer.remove(); // Remove o contêiner (e o link)
+            wrapper.appendChild(title);
+            wrapper.appendChild(iframe);
+            iframesContainer.appendChild(wrapper);
+
+            // Adiciona evento para expandir o iframe após 3 segundos de hover
+            let hoverTimeout;
+            iframe.addEventListener('mouseenter', () => {
+                pauseInterval(); // Pausar ao interagir com iframe
+                hoverTimeout = setTimeout(() => {
+                    iframe.classList.add('fullscreen');
+                    showOpenTabButton(site.url); // Mostrar o botão "Abrir em Nova Aba"
+                }, 3000); // 3 segundos para expandir
+            });
+
+            iframe.addEventListener('mouseleave', () => {
+                clearTimeout(hoverTimeout);
+                iframe.classList.remove('fullscreen');
+                hideOpenTabButton(); // Esconder o botão "Abrir em Nova Aba"
+                resumeInterval(); // Retomar o temporizador ao sair do iframe
+            });
         });
-
-        linkContainer.appendChild(customLink); // Adiciona o link ao contêiner
-        linkContainer.appendChild(deleteButton); // Adiciona o botão de exclusão ao contêiner
-
-        customLinksDropdown.appendChild(linkContainer); // Adiciona o contêiner ao dropdown
     }
 
-    // Adicionando links provisórios para teste
-    addCustomLink("OpenAI", "https://www.openai.com");
-    addCustomLink("Google", "https://www.google.com");
-    addCustomLink("Wikipedia", "https://www.wikipedia.org");
+    // Função para mostrar o botão "Abrir em Nova Aba"
+    function showOpenTabButton(url) {
+        openNewTabBtn.style.display = 'block';
+        openNewTabBtn.onclick = () => window.open(url, '_blank'); // Abre o link do iframe expandido em uma nova aba
+    }
 
-    // Evento para adicionar um link personalizado ao clicar no botão "Adicionar Link"
-    addLinkBtn.addEventListener("click", function () {
-        const linkName = prompt("Insira o nome do link:");
-        const linkUrl = prompt("Insira a URL do link:");
+    // Função para esconder o botão "Abrir em Nova Aba"
+    function hideOpenTabButton() {
+        openNewTabBtn.style.display = 'none';
+    }
 
-        if (linkName && linkUrl) {
-            addCustomLink(linkName, linkUrl);
-            alert("Link adicionado com sucesso!");
-        } else {
-            alert("Por favor, insira um nome e uma URL válidos.");
+    // Atualiza os iframes com base no índice atual
+    function updateIframes(siteList) {
+        const iframes = document.querySelectorAll('.iframe-wrapper iframe');
+        const titles = document.querySelectorAll('.iframe-wrapper .site-title');
+
+        iframes.forEach((iframe, index) => {
+            const siteIndex = (currentIndex + index) % siteList.length;
+            iframe.src = siteList[siteIndex].url; // Atualiza a URL do iframe
+            titles[index].textContent = siteList[siteIndex].name; // Atualiza o título
+        });
+    }
+
+    // Alternar entre diferentes listas de sites
+    function switchSiteList(index) {
+        currentSiteListIndex = index;
+        currentIndex = 0;
+        initializeIframes(siteLists[currentSiteListIndex]);
+        resetInterval();
+    }
+
+    // Inicializa a primeira lista de iframes
+    initializeIframes(siteLists[currentSiteListIndex]);
+
+    // Controla o tempo de troca dos iframes
+    function startInterval() {
+        interval = setInterval(() => {
+            currentIndex = (currentIndex + 1) % siteLists[currentSiteListIndex].length;
+            updateIframes(siteLists[currentSiteListIndex]);
+        }, intervalTime);
+    }
+
+    function resetInterval() {
+        clearInterval(interval);
+        if (!isPaused) {
+            startInterval();
         }
+    }
+
+    startInterval(); // Inicia o temporizador
+
+    // Controles para alternar entre listas de sites
+    const switchButtonsContainer = document.createElement('div');
+    switchButtonsContainer.className = 'switch-buttons';
+
+    siteLists.forEach((_, index) => {
+        const button = document.createElement('button');
+        button.textContent = `Lista ${index + 1}`;
+        button.addEventListener('click', () => switchSiteList(index));
+        switchButtonsContainer.appendChild(button);
     });
+
+    document.body.appendChild(switchButtonsContainer);
+
+    // Pausar/Retomar o temporizador
+    function pauseInterval() {
+        clearInterval(interval);
+        isPaused = true;
+    }
+
+    function resumeInterval() {
+        isPaused = false;
+        startInterval();
+    }
 });
