@@ -1,6 +1,6 @@
 // Lista de sites locais como exemplo
 var sites1 = [
-    { name: "Página 1", url: "/pagina1.html" }, // Exemplo de URLs locais no mesmo domínio
+    { name: "Página 1", url: "/pagina1.html" }, // Exemplo de URLs locais
     { name: "Página 2", url: "/pagina2.html" }
 ];
 
@@ -16,6 +16,7 @@ const siteLists = [sites1, sites2];
 let zoomLevel = 1;
 let expandTimeout;
 let isFullscreen = false;
+let intervalTime = 3000; // Padrão de 3 segundos para expandir
 
 document.addEventListener("DOMContentLoaded", function () {
     const iframesContainer = document.querySelector('.iframes-container');
@@ -23,8 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const openNewTabBtn = document.getElementById('open-new-tab');
     const returnToMainBtn = document.getElementById('return-to-main');
     const overlay = document.getElementById('overlay');
+    const linkList = document.getElementById('link-list');
+    const adjustTimeBtn = document.getElementById('adjust-time'); // Ajustar tempo para expansão
 
-    // Função para inicializar iframes
+    // Função para inicializar iframes e lista lateral
     function initializeIframes(siteList) {
         iframesContainer.innerHTML = ''; // Limpar iframes anteriores
 
@@ -54,6 +57,24 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Função para criar a lista lateral
+    function initializeLinkList() {
+        linkList.innerHTML = ''; // Limpa a lista
+
+        siteLists.forEach((siteList, index) => {
+            const li = document.createElement('li');
+            const button = document.createElement('button');
+            button.textContent = siteList[0].name;
+
+            button.addEventListener('click', () => {
+                initializeIframes(siteLists[index]);
+            });
+
+            li.appendChild(button);
+            linkList.appendChild(li);
+        });
+    }
+
     // Função para ajustar o zoom dentro do iframe
     adjustZoomBtn.addEventListener('click', () => {
         const newZoom = prompt('Digite o novo nível de zoom (ex: 1 para 100%, 0.5 para 50%):');
@@ -70,11 +91,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Função para ajustar o tempo de expansão
+    adjustTimeBtn.addEventListener('click', () => {
+        const newTime = prompt('Digite o novo tempo para expandir em segundos:');
+        if (newTime && !isNaN(newTime) && newTime > 0) {
+            intervalTime = parseInt(newTime) * 1000;
+        }
+    });
+
     // Função para mostrar o tooltip
     function showTooltip(iframe) {
         const tooltip = document.createElement('div');
         tooltip.className = 'iframe-tooltip';
-        tooltip.textContent = 'Mantenha o mouse por 3 segundos para expandir';
+        tooltip.textContent = 'Mantenha o mouse por ' + (intervalTime / 1000) + ' segundos para expandir';
         document.body.appendChild(tooltip);
 
         // Posicionar o tooltip próximo ao iframe
@@ -97,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Mostrar o tooltip
                 tooltip = showTooltip(iframe);
                 
-                // Expandir após 3 segundos
+                // Expandir após o tempo definido em intervalTime
                 expandTimeout = setTimeout(() => {
                     if (tooltip) tooltip.remove();
                     iframe.classList.add('fullscreen');
@@ -108,11 +137,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     returnToMainBtn.style.display = 'block';
                     openNewTabBtn.dataset.url = iframe.dataset.url;
                     isFullscreen = true;
-                }, 3000);
+                }, intervalTime);
             }
         });
 
-        // Ocultar o tooltip e cancelar a expansão se o mouse sair antes dos 3 segundos
+        // Ocultar o tooltip e cancelar a expansão se o mouse sair antes do tempo definido
         iframe.addEventListener('mouseout', () => {
             if (tooltip) tooltip.remove();
             clearTimeout(expandTimeout);
@@ -141,6 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Inicializa os iframes ao carregar a página
+    // Inicializa a lista lateral e os iframes ao carregar a página
+    initializeLinkList();
     initializeIframes(siteLists[0]);
 });
