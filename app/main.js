@@ -33,10 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const adjustZoomBtn = document.getElementById('adjust-zoom');
     const prevGroupBtn = document.getElementById('previous-group');
     const nextGroupBtn = document.getElementById('next-group');
-    const overlay = document.getElementById('overlay');
-    const closeBtn = document.getElementById('close-fullscreen');
 
-    // Função para inicializar iframes
+    // Função para inicializar iframes (ajuste para manter o zoom ao alternar sites)
     function initializeIframes(siteList) {
         iframesContainer.innerHTML = ''; // Limpar iframes anteriores
 
@@ -48,20 +46,13 @@ document.addEventListener("DOMContentLoaded", function () {
             iframe.src = site.url;
             iframe.dataset.url = site.url;
 
-            // Cria a mensagem de dica
-            const hoverMessage = document.createElement('div');
-            hoverMessage.textContent = 'Mantenha o mouse por 3 segundos para expandir';
-            hoverMessage.className = 'hover-message';
-            hoverMessage.style.display = 'none';
-
-            wrapper.appendChild(hoverMessage);
             wrapper.appendChild(iframe);
             iframesContainer.appendChild(wrapper);
 
-            // Evento de zoom no iframe
+            // Aplica o zoom ao conteúdo do iframe ao carregar
             iframe.onload = function () {
                 try {
-                    iframe.contentWindow.document.body.style.zoom = zoomLevel;
+                    iframe.contentWindow.document.body.style.zoom = zoomLevel; // Aplica o zoom atual ao iframe recém-criado
                 } catch (error) {
                     console.error('Erro ao aplicar zoom ao iframe:', error);
                 }
@@ -70,16 +61,11 @@ document.addEventListener("DOMContentLoaded", function () {
             // Expande o iframe após hover por 3 segundos
             iframe.addEventListener('mouseover', () => {
                 if (!isFullscreen) {
-                    hoverMessage.style.display = 'block';
                     expandTimeout = setTimeout(() => {
                         iframe.classList.add('fullscreen');
-                        // Mostra os botões somente quando o iframe estiver expandido
+                        // Mostra o botão "Abrir em Nova Aba" quando o iframe está expandido
                         openNewTabBtn.style.display = 'block';
-                        returnToMainBtn.style.display = 'block';
-                        closeBtn.style.display = 'block';
-                        openNewTabBtn.dataset.url = iframe.dataset.url;
-                        overlay.style.display = 'block'; // Mostra a sobreposição
-                        hoverMessage.style.display = 'none';
+                        openNewTabBtn.dataset.url = iframe.dataset.url; // Atualiza o botão com a URL correta
                         isFullscreen = true; // Define o estado como tela cheia
                     }, 3000); // 3 segundos
                 }
@@ -88,34 +74,23 @@ document.addEventListener("DOMContentLoaded", function () {
             // Cancela expansão se o mouse sair antes dos 3 segundos
             iframe.addEventListener('mouseout', () => {
                 clearTimeout(expandTimeout);
-                hoverMessage.style.display = 'none';
             });
         });
 
+        applyZoomToIframes(); // Mantém o zoom em todos os iframes ao inicializar
         updateActiveListItem();
     }
 
-    // Evento de clique para fechar a sobreposição e voltar ao estado normal
-    overlay.addEventListener('click', () => {
-        minimizeIframe();
-    });
-
-    // Evento de clique para o botão de fechar/minimizar
-    closeBtn.addEventListener('click', () => {
-        minimizeIframe();
-    });
-
-    // Função para minimizar o iframe e esconder botões
-    function minimizeIframe() {
-        const fullscreenIframe = document.querySelector('iframe.fullscreen');
-        if (fullscreenIframe) {
-            fullscreenIframe.classList.remove('fullscreen');
-            openNewTabBtn.style.display = 'none';
-            returnToMainBtn.style.display = 'none';
-            closeBtn.style.display = 'none';
-            overlay.style.display = 'none';
-            isFullscreen = false; // Volta ao estado normal
-        }
+    // Função para aplicar o zoom a todos os iframes presentes na tela
+    function applyZoomToIframes() {
+        const iframes = document.querySelectorAll('iframe');
+        iframes.forEach(iframe => {
+            try {
+                iframe.contentWindow.document.body.style.zoom = zoomLevel; // Aplica o zoom ao conteúdo do iframe
+            } catch (error) {
+                console.error('Erro ao aplicar zoom ao iframe:', error);
+            }
+        });
     }
 
     // Função para manter a animação de destaque ao alternar sites
@@ -180,24 +155,31 @@ document.addEventListener("DOMContentLoaded", function () {
         const newZoom = prompt('Digite o novo nível de zoom (ex: 1 para 100%, 0.5 para 50%):');
         if (newZoom && !isNaN(newZoom) && newZoom > 0) {
             zoomLevel = parseFloat(newZoom);
-            const iframes = document.querySelectorAll('iframe');
-            iframes.forEach(iframe => {
-                iframe.contentWindow.document.body.style.zoom = zoomLevel;
-            });
+            applyZoomToIframes(); // Aplica o novo zoom a todos os iframes
         }
     });
 
     // Evento de clique para abrir o iframe expandido em nova aba
     openNewTabBtn.addEventListener('click', () => {
         if (openNewTabBtn.dataset.url) {
-            window.open(openNewTabBtn.dataset.url, '_blank');
+            window.open(openNewTabBtn.dataset.url, '_blank'); // Abre o link do iframe expandido em uma nova aba
         }
     });
 
-    // Evento de clique para retornar à tela principal
+    // Evento de clique para retornar à tela principal (minimizar o iframe)
     returnToMainBtn.addEventListener('click', () => {
         minimizeIframe();
     });
+
+    // Função para minimizar o iframe e esconder botões
+    function minimizeIframe() {
+        const fullscreenIframe = document.querySelector('iframe.fullscreen');
+        if (fullscreenIframe) {
+            fullscreenIframe.classList.remove('fullscreen');
+            openNewTabBtn.style.display = 'none'; // Esconde o botão ao voltar ao normal
+            isFullscreen = false; // Volta ao estado normal
+        }
+    }
 
     // Cria a lista de links para alternar entre as diferentes listas de sites
     siteLists.forEach((siteList, index) => {
