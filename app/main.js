@@ -171,4 +171,75 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Evento para ajustar o
+    // Evento para ajustar o intervalo de tempo do temporizador
+    adjustTimeBtn.addEventListener('click', () => {
+        const newTime = prompt('Digite o novo intervalo de tempo em segundos:');
+        if (newTime && !isNaN(newTime) && newTime > 0) {
+            intervalTime = parseInt(newTime) * 1000;
+            if (!isPaused) {
+                clearInterval(interval);
+                startInterval();
+            }
+        }
+    });
+
+    // Evento para ajustar o zoom do conteúdo dentro dos iframes
+    adjustZoomBtn.addEventListener('click', () => {
+        const newZoom = prompt('Digite o novo nível de zoom (ex: 1 para 100%, 0.5 para 50%):');
+        if (newZoom && !isNaN(newZoom) && newZoom > 0) {
+            zoomLevel = parseFloat(newZoom);
+            applyZoomToIframes(); // Aplica o novo zoom a todos os iframes
+        }
+    });
+
+    // Evento de clique para abrir o iframe expandido em nova aba
+    openNewTabBtn.addEventListener('click', () => {
+        if (openNewTabBtn.dataset.url) {
+            window.open(openNewTabBtn.dataset.url, '_blank'); // Abre o link do iframe expandido em uma nova aba
+        }
+    });
+
+    // Evento de clique para retornar à tela principal (minimizar o iframe)
+    returnToMainBtn.addEventListener('click', () => {
+        minimizeIframe();
+    });
+
+    // Cria a lista de links para alternar entre as diferentes listas de sites
+    siteLists.forEach((siteList, index) => {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.textContent = siteList[0].name; // Exibe o nome do primeiro site do grupo
+
+        button.addEventListener('click', () => {
+            pauseInterval(); // Pausar o temporizador ao mudar manualmente
+            currentSiteListIndex = index;
+            initializeIframes(siteLists[currentSiteListIndex]);
+            updateActiveListItem(); // Certifica que a lista lateral é atualizada corretamente
+        });
+
+        li.appendChild(button);
+        linkList.appendChild(li);
+    });
+
+    // Eventos para os botões de navegação (Anterior/Próximo)
+prevGroupBtn.addEventListener('click', () => {
+        pauseInterval();
+        currentSiteListIndex = (currentSiteListIndex - 1 + siteLists.length) % siteLists.length;
+        initializeIframes(siteLists[currentSiteListIndex]);
+        updateActiveListItem(); // Atualiza a lista lateral ao trocar manualmente para o grupo anterior
+    });
+
+    nextGroupBtn.addEventListener('click', () => {
+        pauseInterval();
+        currentSiteListIndex = (currentSiteListIndex + 1) % siteLists.length;
+        initializeIframes(siteLists[currentSiteListIndex]);
+        updateActiveListItem(); // Atualiza a lista lateral ao trocar manualmente para o próximo grupo
+    });
+
+    // Inicializa a primeira lista de iframes
+    initializeIframes(siteLists[currentSiteListIndex]);
+
+    // Inicia o temporizador automaticamente
+    startInterval();
+});
+    
