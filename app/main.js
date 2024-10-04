@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
             iframe.addEventListener('mouseover', () => {
                 if (!isFullscreen) {
                     hoverMessage.style.display = 'block';
+                    // Expande o iframe mesmo que o temporizador esteja pausado
                     expandTimeout = setTimeout(() => {
                         expandIframe(iframe); // Função para expandir o iframe
                         hoverMessage.style.display = 'none'; // Oculta a mensagem após expandir
@@ -90,7 +91,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Função para aplicar o zoom a um único iframe
     function applyZoomToIframe(iframe) {
         try {
-            iframe.contentWindow.document.body.style.zoom = zoomLevel; // Aplica o zoom ao conteúdo do iframe
+            // Usa transform para aplicar zoom ao conteúdo dentro do iframe
+            iframe.style.transform = `scale(${zoomLevel})`;
+            iframe.style.transformOrigin = '0 0'; // Garante que o zoom ocorra a partir do canto superior esquerdo
         } catch (error) {
             console.error('Erro ao aplicar zoom ao iframe:', error);
         }
@@ -105,8 +108,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Função para expandir o iframe para tela cheia
     function expandIframe(iframe) {
         iframe.classList.add('fullscreen');
-        // Mostra o botão "Abrir em Nova Aba" quando o iframe está expandido
+        // Mostra o botão "Abrir em Nova Aba" apenas quando o iframe está expandido
         openNewTabBtn.style.display = 'block';
+        returnToMainBtn.style.display = 'block'; // Mostra o botão para retornar à tela principal
         openNewTabBtn.dataset.url = iframe.dataset.url; // Atualiza o botão com a URL correta
         isFullscreen = true; // Define o estado como tela cheia
     }
@@ -117,6 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (fullscreenIframe) {
             fullscreenIframe.classList.remove('fullscreen');
             openNewTabBtn.style.display = 'none'; // Esconde o botão ao voltar ao normal
+            returnToMainBtn.style.display = 'none'; // Esconde o botão de retorno
             isFullscreen = false; // Volta ao estado normal
         }
     }
@@ -207,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
         button.textContent = siteList[0].name; // Exibe o nome do primeiro site do grupo
 
         button.addEventListener('click', () => {
-            pauseInterval(); // Pausar o temporizador ao mudar manualmente
+pauseInterval(); // Pausar o temporizador ao mudar manualmente
             currentSiteListIndex = index;
             initializeIframes(siteLists[currentSiteListIndex]);
             updateActiveListItem(); // Certifica que a lista lateral é atualizada corretamente
@@ -225,8 +230,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateActiveListItem(); // Atualiza a lista lateral ao trocar manualmente para o grupo anterior
     });
 
- 
-nextGroupBtn.addEventListener('click', () => {
+    nextGroupBtn.addEventListener('click', () => {
         pauseInterval();
         currentSiteListIndex = (currentSiteListIndex + 1) % siteLists.length;
         initializeIframes(siteLists[currentSiteListIndex]);
