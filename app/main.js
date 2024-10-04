@@ -1,6 +1,6 @@
 // Lista de sites locais como exemplo
 var sites1 = [
-    { name: "Página 1", url: "/pagina1.html" }, // Exemplo de URLs locais
+    { name: "Página 1", url: "/pagina1.html" }, // URLs locais de exemplo
     { name: "Página 2", url: "/pagina2.html" }
 ];
 
@@ -16,7 +16,7 @@ const siteLists = [sites1, sites2];
 let zoomLevel = 1;
 let expandTimeout;
 let isFullscreen = false;
-let intervalTime = 3000; // Padrão de 3 segundos para expandir
+let hoverTime = 3000; // Tempo padrão de 3 segundos para expansão
 
 document.addEventListener("DOMContentLoaded", function () {
     const iframesContainer = document.querySelector('.iframes-container');
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const returnToMainBtn = document.getElementById('return-to-main');
     const overlay = document.getElementById('overlay');
     const linkList = document.getElementById('link-list');
-    const adjustTimeBtn = document.getElementById('adjust-time'); // Ajustar tempo para expansão
+    const adjustTimeBtn = document.getElementById('adjust-time');
 
     // Função para inicializar iframes e lista lateral
     function initializeIframes(siteList) {
@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // Adicionar evento de carregamento para aplicar o zoom no conteúdo interno
             iframe.onload = function () {
                 try {
-                    // Acessar o documento interno do iframe e ajustar o zoom
                     iframe.contentWindow.document.body.style.zoom = zoomLevel;
                 } catch (error) {
                     console.error('Erro ao aplicar zoom no conteúdo do iframe:', error);
@@ -91,11 +90,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Função para ajustar o tempo de expansão
+    // Função para ajustar o tempo de expansão ao passar o mouse
     adjustTimeBtn.addEventListener('click', () => {
         const newTime = prompt('Digite o novo tempo para expandir em segundos:');
         if (newTime && !isNaN(newTime) && newTime > 0) {
-            intervalTime = parseInt(newTime) * 1000;
+            hoverTime = parseInt(newTime) * 1000;
         }
     });
 
@@ -103,10 +102,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function showTooltip(iframe) {
         const tooltip = document.createElement('div');
         tooltip.className = 'iframe-tooltip';
-        tooltip.textContent = 'Mantenha o mouse por ' + (intervalTime / 1000) + ' segundos para expandir';
+        tooltip.textContent = 'Mantenha o mouse por ' + (hoverTime / 1000) + ' segundos para expandir';
         document.body.appendChild(tooltip);
 
-        // Posicionar o tooltip próximo ao iframe
         const rect = iframe.getBoundingClientRect();
         tooltip.style.left = `${rect.left + window.scrollX + 10}px`;
         tooltip.style.top = `${rect.top + window.scrollY - 30}px`;
@@ -120,41 +118,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
         iframe.addEventListener('mouseover', () => {
             if (!isFullscreen) {
-                // Mudar o cursor para "pointer"
                 iframe.style.cursor = 'pointer';
 
-                // Mostrar o tooltip
                 tooltip = showTooltip(iframe);
-                
-                // Expandir após o tempo definido em intervalTime
+
                 expandTimeout = setTimeout(() => {
                     if (tooltip) tooltip.remove();
                     iframe.classList.add('fullscreen');
 
-                    // Mostrar overlay e botões de controle
                     overlay.style.display = 'block';
                     openNewTabBtn.style.display = 'block';
                     returnToMainBtn.style.display = 'block';
                     openNewTabBtn.dataset.url = iframe.dataset.url;
                     isFullscreen = true;
-                }, intervalTime);
+                }, hoverTime);
             }
         });
 
-        // Ocultar o tooltip e cancelar a expansão se o mouse sair antes do tempo definido
+        // Remover tooltip e cancelar expansão se o mouse sair
         iframe.addEventListener('mouseout', () => {
             if (tooltip) tooltip.remove();
             clearTimeout(expandTimeout);
         });
     }
 
-    // Função para minimizar o iframe e retornar à visualização padrão
+    // Função para minimizar o iframe
     returnToMainBtn.addEventListener('click', () => {
         const fullscreenIframe = document.querySelector('iframe.fullscreen');
         if (fullscreenIframe) {
             fullscreenIframe.classList.remove('fullscreen');
 
-            // Ocultar overlay e botões
             overlay.style.display = 'none';
             openNewTabBtn.style.display = 'none';
             returnToMainBtn.style.display = 'none';
