@@ -1,170 +1,127 @@
 // Lista de sites como exemplo
 var sites1 = [
-    { name: "Google", url: "https://www.google.com" }, 
-    { name: "YouTube", url: "https://www.youtube.com" }
+    { name: "Google", url: "https://www.google.com" },
+    { name: "YouTube", url: "https://www.youtube.com" },
+    // Continue até 12 links com seus nomes e URLs
 ];
 
 var sites2 = [
     { name: "GitHub", url: "https://www.github.com" },
-    { name: "Stack Overflow", url: "https://stackoverflow.com" }
+    { name: "Stack Overflow", url: "https://stackoverflow.com" },
+    // Continue até 12 links com seus nomes e URLs
 ];
 
+// Agrupa todas as listas `sites` em um único array `siteLists`
 const siteLists = [sites1, sites2];
 
 // Variáveis de controle de estado
-let zoomLevel = 1; // Nível de zoom inicial para iframes
-let expandTimeout;
-let isFullscreen = false;
-let hoverTime = 3000; // Tempo padrão de 3 segundos para expandir
 let currentSiteListIndex = 0;
 let intervalTime = 5000;
 let interval;
 let isPaused = false;
+let zoomLevel = 1; // Zoom inicial para o conteúdo dentro dos iframes
+let expandTimeout; // Timeout para expandir o iframe
+let isFullscreen = false; // Estado para verificar se algum iframe está em tela cheia
 
 document.addEventListener("DOMContentLoaded", function () {
+    const linkList = document.getElementById('link-list');
     const iframesContainer = document.querySelector('.iframes-container');
-    const adjustZoomBtn = document.getElementById('adjust-zoom');
     const openNewTabBtn = document.getElementById('open-new-tab');
     const returnToMainBtn = document.getElementById('return-to-main');
-    const overlay = document.getElementById('overlay');
-    const linkList = document.getElementById('link-list');
+    const pauseResumeBtn = document.getElementById('pause-resume');
     const adjustTimeBtn = document.getElementById('adjust-time');
+    const adjustZoomBtn = document.getElementById('adjust-zoom');
     const prevGroupBtn = document.getElementById('previous-group');
     const nextGroupBtn = document.getElementById('next-group');
-    const pauseResumeBtn = document.getElementById('pause-resume');
 
-    // Função para inicializar iframes
+    // Função para inicializar iframes (ajuste para manter o zoom ao alternar sites)
     function initializeIframes(siteList) {
         iframesContainer.innerHTML = ''; // Limpar iframes anteriores
 
-        siteList.forEach((site) => {
-            const iframeWrapper = document.createElement('div');
-            iframeWrapper.className = 'iframe-wrapper';
+        siteList.forEach((site, index) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'iframe-wrapper';
 
             const iframe = document.createElement('iframe');
             iframe.src = site.url;
             iframe.dataset.url = site.url;
 
-            iframeWrapper.appendChild(iframe);
-            iframesContainer.appendChild(iframeWrapper);
+            // Cria a mensagem de dica
+            const hoverMessage = document.createElement('div');
+            hoverMessage.textContent = 'Mantenha o mouse por 3 segundos para expandir';
+            hoverMessage.className = 'hover-message';
+            hoverMessage.style.display = 'none';
 
-            // Adicionar evento de carregamento para aplicar o zoom no conteúdo interno
+            wrapper.appendChild(hoverMessage);
+            wrapper.appendChild(iframe);
+            iframesContainer.appendChild(wrapper);
+
+            // Aplica o zoom ao conteúdo do iframe ao carregar
             iframe.onload = function () {
                 try {
-                    // Aplicar zoom ao conteúdo interno do iframe
-                    iframe.contentWindow.document.body.style.zoom = zoomLevel;
+                    applyZoomToIframe(iframe); // Aplica o zoom ao iframe recém-criado
                 } catch (error) {
-                    console.error('Erro ao aplicar zoom no conteúdo do iframe:', error);
+                    console.error('Erro ao aplicar zoom ao iframe:', error);
                 }
             };
 
-            // Inicializar comportamento de hover para tooltip e expansão
-            initializeIframeHoverBehavior(iframe);
+            // Adiciona evento para expandir o iframe após hover por 3 segundos
+            iframe.addEventListener('mouseover', () => {
+                if (!isFullscreen) {
+                    hoverMessage.style.display = 'block';
+                    expandTimeout = setTimeout(() => {
+                        expandIframe(iframe); // Função para expandir o iframe
+                        hoverMessage.style.display = 'none'; // Oculta a mensagem após expandir
+                    }, 3000); // 3 segundos
+                }
+            });
+
+            // Cancela expansão se o mouse sair antes dos 3 segundos
+            iframe.addEventListener('mouseout', () => {
+                clearTimeout(expandTimeout);
+                hoverMessage.style.display = 'none';
+            });
         });
 
-        updateActiveListItem(); // Atualizar destaque da lista lateral
+        applyZoomToIframes(); // Mantém o zoom em todos os iframes ao inicializar
+        updateActiveListItem(); // Atualiza a lista lateral para destacar o grupo ativo
     }
 
-    // Função para aplicar o zoom atual em todos os iframes presentes na tela
+    // Função para aplicar o zoom a um único iframe
+    function applyZoomToIframe(iframe) {
+        try {
+            iframe.contentWindow.document.body.style.zoom = zoomLevel; // Aplica o zoom ao conteúdo do iframe
+        } catch (error) {
+            console.error('Erro ao aplicar zoom ao iframe:', error);
+        }
+    }
+
+    // Função para aplicar o zoom a todos os iframes presentes na tela
     function applyZoomToIframes() {
         const iframes = document.querySelectorAll('iframe');
-        iframes.forEach(iframe => {
-            try {
-                iframe.contentWindow.document.body.style.zoom = zoomLevel;
-            } catch (error) {
-                console.error('Erro ao aplicar zoom ao iframe:', error);
-            }
-        });
+        iframes.forEach(iframe => applyZoomToIframe(iframe));
     }
 
-    // Função para ajustar o zoom dentro dos iframes
-    adjustZoomBtn.addEventListener('click', () => {
-        const newZoom = prompt('Digite o novo nível de zoom (ex: 1 para 100%, 0.5 para 50%):');
-        if (newZoom && !isNaN(newZoom) && newZoom > 0) {
-            zoomLevel = parseFloat(newZoom);
-            applyZoomToIframes(); // Aplicar o novo zoom a todos os iframes
-        }
-    });
-
-    // Função para ajustar o tempo de expansão ao passar o mouse
-    adjustTimeBtn.addEventListener('click', () => {
-        const newTime = prompt('Digite o novo tempo para expandir em segundos:');
-        if (newTime && !isNaN(newTime) && newTime > 0) {
-            hoverTime = parseInt(newTime) * 1000; // Tempo em milissegundos
-        }
-    });
-
-    // Função para mostrar a tooltip ao passar o mouse
-    function showTooltip(iframe) {
-        const tooltip = document.createElement('div');
-        tooltip.className = 'iframe-tooltip';
-        tooltip.textContent = 'Mantenha o mouse por ' + (hoverTime / 1000) + ' segundos para expandir';
-        document.body.appendChild(tooltip);
-
-        // Posicionar a tooltip próximo ao iframe
-        const rect = iframe.getBoundingClientRect();
-        tooltip.style.left = `${rect.left + window.scrollX + 10}px`;
-        tooltip.style.top = `${rect.top + window.scrollY - 30}px`;
-
-        return tooltip;
+    // Função para expandir o iframe para tela cheia
+    function expandIframe(iframe) {
+        iframe.classList.add('fullscreen');
+        // Mostra o botão "Abrir em Nova Aba" quando o iframe está expandido
+        openNewTabBtn.style.display = 'block';
+        openNewTabBtn.dataset.url = iframe.dataset.url; // Atualiza o botão com a URL correta
+        isFullscreen = true; // Define o estado como tela cheia
     }
 
-    // Função para expandir o iframe ao passar o mouse por um determinado tempo
-    function initializeIframeHoverBehavior(iframe) {
-        let tooltip;
-
-        iframe.addEventListener('mouseover', () => {
-            if (!isFullscreen) {
-                iframe.style.cursor = 'pointer'; // Mudar o cursor para indicar interatividade
-
-                // Mostrar a tooltip
-                tooltip = showTooltip(iframe);
-
-                // Expandir o iframe após o tempo definido
-                expandTimeout = setTimeout(() => {
-                    if (tooltip) tooltip.remove();
-                    iframe.classList.add('fullscreen');
-
-                    // Mostrar overlay e botões de controle ao expandir
-                    overlay.style.display = 'block';
-                    openNewTabBtn.style.display = 'block';
-                    returnToMainBtn.style.display = 'block';
-                    openNewTabBtn.dataset.url = iframe.dataset.url; // Define a URL correta no botão
-                    isFullscreen = true;
-                }, hoverTime);
-            }
-        });
-
-        // Remover tooltip e cancelar expansão se o mouse sair antes do tempo definido
-        iframe.addEventListener('mouseout', () => {
-            if (tooltip) tooltip.remove();
-            clearTimeout(expandTimeout);
-        });
-    }
-
-    // Função para minimizar o iframe e retornar ao modo padrão
-    returnToMainBtn.addEventListener('click', () => {
+    // Função para minimizar o iframe e esconder botões
+    function minimizeIframe() {
         const fullscreenIframe = document.querySelector('iframe.fullscreen');
         if (fullscreenIframe) {
             fullscreenIframe.classList.remove('fullscreen');
-
-            // Ocultar overlay e botões ao minimizar
-            overlay.style.display = 'none';
-            openNewTabBtn.style.display = 'none';
-            returnToMainBtn.style.display = 'none';
-
-            isFullscreen = false;
+            openNewTabBtn.style.display = 'none'; // Esconde o botão ao voltar ao normal
+            isFullscreen = false; // Volta ao estado normal
         }
-    });
+    }
 
-    // Evento para abrir o iframe expandido em uma nova aba
-    openNewTabBtn.addEventListener('click', () => {
-        if (openNewTabBtn.dataset.url) {
-            window.open(openNewTabBtn.dataset.url, '_blank');
-        }
-    });
-
-    // Função para atualizar o destaque da lista lateral
+    // Função para manter a animação de destaque ao alternar sites
     function updateActiveListItem() {
         const listItems = document.querySelectorAll('#link-list li button');
         listItems.forEach((item, index) => {
@@ -176,20 +133,109 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Eventos para navegação pelos grupos de sites
+    // Função para iniciar o temporizador
+    function startInterval() {
+        interval = setInterval(() => {
+            currentSiteListIndex = (currentSiteListIndex + 1) % siteLists.length;
+            initializeIframes(siteLists[currentSiteListIndex]);
+            updateActiveListItem(); // Atualiza a lista lateral durante a troca automática
+        }, intervalTime);
+    }
+
+    // Função para pausar o temporizador
+    function pauseInterval() {
+        clearInterval(interval);
+        isPaused = true;
+        pauseResumeBtn.textContent = '▶️ Retomar';
+    }
+
+    // Função para retomar o temporizador
+    function resumeInterval() {
+        if (isPaused) {
+            isPaused = false;
+            startInterval();
+            pauseResumeBtn.textContent = '⏸ Pausar';
+        }
+    }
+
+    // Evento de clique para pausar ou retomar o temporizador
+    pauseResumeBtn.addEventListener('click', () => {
+        if (isPaused) {
+            resumeInterval();
+        } else {
+            pauseInterval();
+        }
+    });
+
+    // Evento para ajustar o intervalo de tempo do temporizador
+    adjustTimeBtn.addEventListener('click', () => {
+        const newTime = prompt('Digite o novo intervalo de tempo em segundos:');
+        if (newTime && !isNaN(newTime) && newTime > 0) {
+            intervalTime = parseInt(newTime) * 1000;
+            if (!isPaused) {
+                clearInterval(interval);
+                startInterval();
+            }
+        }
+    });
+
+    // Evento para ajustar o zoom do conteúdo dentro dos iframes
+    adjustZoomBtn.addEventListener('click', () => {
+        const newZoom = prompt('Digite o novo nível de zoom (ex: 1 para 100%, 0.5 para 50%):');
+        if (newZoom && !isNaN(newZoom) && newZoom > 0) {
+            zoomLevel = parseFloat(newZoom);
+            applyZoomToIframes(); // Aplica o novo zoom a todos os iframes
+        }
+    });
+
+    // Evento de clique para abrir o iframe expandido em nova aba
+    openNewTabBtn.addEventListener('click', () => {
+        if (openNewTabBtn.dataset.url) {
+            window.open(openNewTabBtn.dataset.url, '_blank'); // Abre o link do iframe expandido em uma nova aba
+        }
+    });
+
+    // Evento de clique para retornar à tela principal (minimizar o iframe)
+    returnToMainBtn.addEventListener('click', () => {
+        minimizeIframe();
+    });
+
+    // Cria a lista de links para alternar entre as diferentes listas de sites
+    siteLists.forEach((siteList, index) => {
+        const li = document.createElement('li');
+        const button = document.createElement('button');
+        button.textContent = siteList[0].name; // Exibe o nome do primeiro site do grupo
+
+        button.addEventListener('click', () => {
+            pauseInterval(); // Pausar o temporizador ao mudar manualmente
+            currentSiteListIndex = index;
+            initializeIframes(siteLists[currentSiteListIndex]);
+            updateActiveListItem(); // Certifica que a lista lateral é atualizada corretamente
+        });
+
+        li.appendChild(button);
+        linkList.appendChild(li);
+    });
+
+    // Eventos para os botões de navegação (Anterior/Próximo)
     prevGroupBtn.addEventListener('click', () => {
+        pauseInterval();
         currentSiteListIndex = (currentSiteListIndex - 1 + siteLists.length) % siteLists.length;
         initializeIframes(siteLists[currentSiteListIndex]);
-        applyZoomToIframes(); // Aplicar o zoom atual ao mudar de grupo
+        updateActiveListItem(); // Atualiza a lista lateral ao trocar manualmente para o grupo anterior
     });
 
-    nextGroupBtn.addEventListener('click', () => {
+ 
+nextGroupBtn.addEventListener('click', () => {
+        pauseInterval();
         currentSiteListIndex = (currentSiteListIndex + 1) % siteLists.length;
         initializeIframes(siteLists[currentSiteListIndex]);
-        applyZoomToIframes(); // Aplicar o zoom atual ao mudar de grupo
+        updateActiveListItem(); // Atualiza a lista lateral ao trocar manualmente para o próximo grupo
     });
 
-    // Inicializa a lista lateral e os iframes ao carregar a página
+    // Inicializa a primeira lista de iframes
     initializeIframes(siteLists[currentSiteListIndex]);
-    applyZoomToIframes(); // Aplicar zoom inicial aos iframes
+
+    // Inicia o temporizador automaticamente
+    startInterval();
 });
