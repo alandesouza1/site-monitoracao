@@ -123,7 +123,20 @@ iframe.fullscreen {
     pointer-events: auto;
 }
 
-/* Sobreposição quando o iframe está em tela cheia */
+/* Tooltip style for iframe expansion */
+.iframe-tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 1001;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* Full-screen overlay when iframe is expanded */
 #overlay {
     position: fixed;
     top: 0;
@@ -135,7 +148,7 @@ iframe.fullscreen {
     cursor: pointer;
 }
 
-/* Botão para abrir em nova aba e voltar à tela principal */
+/* Buttons for full-screen iframe controls */
 #open-new-tab,
 #return-to-main {
     position: fixed;
@@ -149,6 +162,7 @@ iframe.fullscreen {
     z-index: 1002;
     border-radius: 5px;
     margin-right: 10px;
+    font-size: 14px;
 }
 
 #open-new-tab:hover,
@@ -156,7 +170,7 @@ iframe.fullscreen {
     background-color: #0055ff;
 }
 
-/* Botão para fechar o iframe expandido */
+/* Button to close the full-screen iframe */
 #close-fullscreen {
     position: fixed;
     top: 20px;
@@ -166,7 +180,7 @@ iframe.fullscreen {
     color: #fff;
     border: none;
     cursor: pointer;
-    z-index: 1003; /* Colocado acima dos outros botões */
+    z-index: 1003;
     border-radius: 5px;
 }
 
