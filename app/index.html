@@ -1,37 +1,34 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iframes Dinâmicos</title>
+    <title>Controle de Iframes</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <ul id="link-list">
-                <!-- Lista de sites será populada pelo JavaScript -->
-            </ul>
-            <div class="controls">
-                <button id="previous-group">⬅️ Anterior</button>
-                <button id="next-group">➡️ Próximo</button>
-                <button id="pause-resume">⏸ Pausar</button>
-                <button id="adjust-time">⏱ Ajustar Tempo</button>
-                <button id="adjust-zoom">🔍 Ajustar Zoom</button>
-                <p id="timer-info">Tempo de troca: <span id="interval-time">5</span> segundos</p>
-            </div>
-        </div>
-        <div class="iframes-container">
-            <!-- Iframes serão adicionados pelo JS -->
-        </div>
-        <!-- Sobreposição ao expandir iframe -->
-        <div id="overlay" style="display: none;"></div>
-        <!-- Botões para ações ao expandir iframe -->
-        <button id="open-new-tab" style="display: none;">🌐 Abrir em Nova Aba</button>
-        <button id="return-to-main" style="display: none;">🔙 Voltar à Tela Principal</button>
-        <!-- Botão de fechar/minimizar -->
-        <button id="close-fullscreen" style="display: none;">✖️</button>
-    </div>
+    <!-- Contêiner da lista lateral -->
+    <aside id="sidebar">
+        <ul id="link-list">
+            <!-- Botões para alternar entre grupos de sites serão gerados dinamicamente -->
+        </ul>
+        <!-- Botões de controle -->
+        <button id="previous-group">Anterior</button>
+        <button id="next-group">Próximo</button>
+        <button id="pause-resume">⏸ Pausar</button>
+        <button id="adjust-time">Ajustar Tempo</button>
+        <button id="adjust-zoom">Ajustar Zoom</button>
+    </aside>
+
+    <!-- Contêiner dos iframes -->
+    <main class="iframes-container">
+        <!-- Iframes serão gerados dinamicamente -->
+    </main>
+
+    <!-- Botões de controle do iframe expandido -->
+    <button id="open-new-tab">Abrir em Nova Aba</button>
+    <button id="return-to-main">Retornar à Tela Principal</button>
+
     <script src="script.js"></script>
 </body>
 </html>
