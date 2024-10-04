@@ -1,82 +1,33 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Controlador de Iframes</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <!-- Cabeçalho fixo -->
-    <header>
-      <div id="nav">
-        <nav>
-          <div class="nav-left">
-            <a href="#" class="header-link">Análise de Comportamento</a>
-          </div>
-          <div class="nav-right">
-            <a href="#" class="header-link">Mapa de Monitoração</a>
-            <ul>
-              <!-- Dropdown Menu -->
-              <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">Outros Links</a>
-                <div class="dropdown-content">
-                  <!-- Links dos grupos de sites são gerados dinamicamente pelo JS -->
-                </div>
-              </li>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframes Dinâmicos com Ajuste</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul id="link-list">
+                <!-- Lista de grupos de sites será populada via JS -->
             </ul>
-            <!-- Novo Dropdown para Links Personalizados -->
-            <ul>
-              <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">Links Personalizados</a>
-                <div class="dropdown-content" id="custom-links-dropdown">
-                  <!-- Links personalizados serão inseridos aqui -->
-                </div>
-              </li>
-            </ul>
-            <button id="addLinkBtn">Adicionar Link</button> <!-- Botão para adicionar link -->
-          </div>
-        </nav>
-      </div>
-    </header>
-
-    <!-- Divisão principal que contém o root da aplicação -->
-    <div id="root">
-      <div id="container">
-        <!-- Sidebar com a lista de sites -->
-        <div id="sidebar">
-          <h3>Sites Disponíveis</h3>
-          <ul id="site-list">
-            <!-- A lista será preenchida dinamicamente pelo JavaScript -->
-          </ul>
+            <!-- Controles adicionais -->
+            <div class="controls">
+                <button id="previous-group">⬅️ Anterior</button>
+                <button id="next-group">➡️ Próximo</button>
+                <button id="pause-resume">⏸ Pausar</button>
+                <button id="adjust-time">⏱ Ajustar Tempo</button>
+                <button id="adjust-zoom">🔍 Ajustar Zoom</button>
+                <p id="timer-info">Tempo de troca: <span id="interval-time">5</span> segundos</p>
+            </div>
         </div>
-
-        <!-- Área principal -->
-        <div id="main-content">
-          <!-- Iframe principal -->
-          <iframe id="content-frame" src="" frameborder="0"></iframe>
-
-          <!-- Controles -->
-          <div class="button-container">
-            <button id="prevBtn">Anterior</button>
-            <button id="nextBtn">Próximo</button>
-            <button id="pauseBtn">Pausar</button>
-            <button id="adjustTimeBtn">Ajustar Tempo</button>
-            <button id="openInNewTabBtn">Abrir em Nova Aba</button>
-            <button id="copyUrlBtn">Copiar URL</button>
-          </div>
+        <div class="iframes-container">
+            <!-- Iframes serão adicionados pelo JS -->
         </div>
-      </div>
+        <!-- Botão para abrir em nova aba ao expandir -->
+        <button id="open-new-tab" style="display: none;">🌐 Abrir em Nova Aba</button>
     </div>
-
-    <!-- Rodapé fixo -->
-    <div id="foot">
-      <footer>
-        <p>Desenvolvido pela Kalendae</p>
-      </footer>
-    </div>
-
-    <!-- Carregamento do script principal -->
-    <script src="main.js"></script>
-  </body>
+    <script src="script.js"></script>
+</body>
 </html>
