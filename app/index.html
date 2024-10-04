@@ -24,8 +24,13 @@
         <div class="iframes-container">
             <!-- Iframes serão adicionados pelo JS -->
         </div>
-        <!-- Botão para abrir em nova aba ao expandir -->
+        <!-- Sobreposição ao expandir iframe -->
+        <div id="overlay" style="display: none;"></div>
+        <!-- Botões para ações ao expandir iframe -->
         <button id="open-new-tab" style="display: none;">🌐 Abrir em Nova Aba</button>
+        <button id="return-to-main" style="display: none;">🔙 Voltar à Tela Principal</button>
+        <!-- Botão de fechar/minimizar -->
+        <button id="close-fullscreen" style="display: none;">✖️</button>
     </div>
     <script src="script.js"></script>
 </body>
