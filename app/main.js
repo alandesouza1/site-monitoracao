@@ -1,31 +1,61 @@
 const pages = [
   {
-    title: "Group 1",
-    iframes: ['https://example.com/1', 'https://example.com/2', 'https://example.com/3', 'https://example.com/4',
-              'https://example.com/5', 'https://example.com/6', 'https://example.com/7', 'https://example.com/8',
-              'https://example.com/9', 'https://example.com/10', 'https://example.com/11', 'https://example.com/12']
+    title: "Grupo 1",
+    iframes: [
+      'https://example.com/1', 'https://example.com/2', 'https://example.com/3', 'https://example.com/4'
+    ]
   },
   {
-    title: "Group 2",
-    iframes: ['https://example.com/13', 'https://example.com/14', 'https://example.com/15', 'https://example.com/16']
+    title: "Grupo 2",
+    iframes: ['https://example.com/5', 'https://example.com/6']
   }
 ];
 
-let currentPage = 0;
-let timerInterval = 5000; // Default to 5 seconds
-let timer = null;
-const iframeContainer = document.getElementById('iframeContainer');
-const pagination = document.getElementById('pagination');
-const groupTitle = document.getElementById('groupTitle');
-const notification = document.getElementById('notification');
-const toggleThemeButton = document.getElementById('toggleTheme');
+const fixedLinks = [
+  { name: "Google", url: "https://google.com" },
+  { name: "YouTube", url: "https://youtube.com" },
+  { name: "Facebook", url: "https://facebook.com" }
+];
 
-// Function to load a page of iframes
+const dropdownContent = document.getElementById('dropdownContent');
+
+// Carregar os links fixos na lista suspensa
+fixedLinks.forEach(link => {
+  const anchor = document.createElement('a');
+  anchor.textContent = link.name;
+  anchor.href = link.url;
+  anchor.target = '_blank';
+  dropdownContent.appendChild(anchor);
+});
+
+// Carregar os grupos de iframes na lista suspensa
+pages.forEach((page, index) => {
+  const anchor = document.createElement('a');
+  anchor.textContent = page.title;
+  anchor.href = '#';
+  anchor.addEventListener('click', () => {
+    loadPage(index);
+  });
+  dropdownContent.appendChild(anchor);
+});
+
+// Função para carregar os iframes
 function loadPage(pageIndex) {
+  const iframeContainer = document.getElementById('iframeContainer');
   iframeContainer.innerHTML = '';
-  groupTitle.textContent = pages[pageIndex].title; // Update the title dynamically
-  
-  pages[pageIndex].iframes.forEach((url) => {
+  document.getElementById('groupTitle').textContent = pages[pageIndex].title;
+
+  const links = pages[pageIndex].iframes;
+  if (links.length === 1) {
+    const iframe = document.createElement('iframe');
+    iframe.src = links[0];
+    iframe.style.width = '100%';
+    iframe.style.height = '90vh';
+    iframeContainer.appendChild(iframe);
+    return;
+  }
+
+  links.forEach(url => {
     const iframeWrapper = document.createElement('div');
     iframeWrapper.className = 'iframe-wrapper';
 
@@ -34,87 +64,25 @@ function loadPage(pageIndex) {
 
     iframe.addEventListener('click', () => {
       clearInterval(timer);
-      document.getElementById('pause').disabled = true;
-      document.getElementById('resume').disabled = false;
-      showNotification("Timer paused due to iframe interaction.");
+      toggleTimerButton.textContent = 'Retornar';
+      showNotification("Temporizador pausado devido à interação.");
     });
-
-    const button = document.createElement('button');
-    button.textContent = 'Open in New Tab';
-    button.onclick = () => window.open(url, '_blank');
 
     iframeWrapper.appendChild(iframe);
-    iframeWrapper.appendChild(button);
     iframeContainer.appendChild(iframeWrapper);
   });
-  updatePagination(pageIndex);
 }
 
-// Update pagination buttons
-function updatePagination(activeIndex) {
-  pagination.innerHTML = '';
-  for (let i = 0; i < pages.length; i++) {
-    const button = document.createElement('button');
-    button.textContent = i + 1;
-    button.disabled = i === activeIndex;
-    button.addEventListener('click', () => {
-      currentPage = i;
-      loadPage(i);
-    });
-    pagination.appendChild(button);
-  }
-}
-
-// Controls
-document.getElementById('prev').addEventListener('click', () => {
-  if (currentPage > 0) {
-    currentPage--;
-    loadPage(currentPage);
-  }
-});
-
-document.getElementById('next').addEventListener('click', () => {
-  if (currentPage < pages.length - 1) {
-    currentPage++;
-    loadPage(currentPage);
-  }
-});
-
-document.getElementById('pause').addEventListener('click', () => {
-  clearInterval(timer);
-  document.getElementById('pause').disabled = true;
-  document.getElementById('resume').disabled = false;
-});
-
-document.getElementById('resume').addEventListener('click', () => {
-  startTimer();
-  document.getElementById('pause').disabled = false;
-  document.getElementById('resume').disabled = true;
-});
-
-// Timer to automatically move to the next page
-function startTimer() {
-  timer = setInterval(() => {
-    if (currentPage < pages.length - 1) {
-      currentPage++;
-    } else {
-      currentPage = 0; // Loop back to the first page
-    }
-    loadPage(currentPage);
-  }, timerInterval);
-}
-
-// Show notification
+// Mostrar notificação
 function showNotification(message) {
+  const notification = document.getElementById('notification');
   notification.textContent = message;
   notification.classList.add('show');
-  setTimeout(() => {
-    notification.classList.remove('show');
-  }, 2000);
+  setTimeout(() => notification.classList.remove('show'), 2000);
 }
 
-// Toggle between light and dark theme
-toggleThemeButton.addEventListener('click', () => {
+// Alternar tema
+document.getElementById('toggleTheme').addEventListener('click', () => {
   const root = document.documentElement;
   if (root.style.getPropertyValue('--background-color') === '#000') {
     root.style.setProperty('--background-color', '#fff');
@@ -125,6 +93,42 @@ toggleThemeButton.addEventListener('click', () => {
   }
 });
 
-// Initialize
+// Controle de temporizador
+let timer = null;
+let timerInterval = 5000;
+
+document.getElementById('toggleTimer').addEventListener('click', () => {
+  if (timer) {
+    clearInterval(timer);
+    timer = null;
+    document.getElementById('toggleTimer').textContent = 'Retornar';
+    showNotification("Temporizador pausado.");
+  } else {
+    startTimer();
+    document.getElementById('toggleTimer').textContent = 'Pausar';
+    showNotification("Temporizador retomado.");
+  }
+});
+
+document.getElementById('adjustTimer').addEventListener('click', () => {
+  const input = prompt("Digite o tempo em segundos:");
+  if (input && input > 0) {
+    timerInterval = input * 1000;
+    clearInterval(timer);
+    startTimer();
+    document.getElementById('toggleTimer').textContent = 'Pausar';
+    showNotification(`Temporizador ajustado para ${input} segundos.`);
+  }
+});
+
+function startTimer() {
+  timer = setInterval(() => {
+    const nextIndex = (currentPage + 1) % pages.length;
+    loadPage(nextIndex);
+  }, timerInterval);
+}
+
+// Inicializar a página com o primeiro grupo e iniciar o temporizador
+let currentPage = 0;
 loadPage(currentPage);
 startTimer();
