@@ -2,7 +2,10 @@ const pages = [
   {
     title: "Grupo 1",
     iframes: [
-      'https://example.com/1', 'https://example.com/2', 'https://example.com/3', 'https://example.com/4'
+      'https://example.com/1',
+      'https://example.com/2',
+      'https://example.com/3',
+      'https://example.com/4'
     ]
   },
   {
@@ -21,11 +24,11 @@ const dropdownContent = document.getElementById('dropdownContent');
 const toggleTimerButton = document.getElementById('toggleTimer');
 const pagination = document.getElementById('pagination');
 let timer = null;
-let timerInterval = 5000; // Intervalo padrão de 5 segundos
+let timerInterval = 5000;
 let currentPage = 0;
 let isPaused = false;
 
-// Carregar os links fixos e grupos dinâmicos na lista suspensa
+// Carregar links fixos e dinâmicos na lista suspensa
 function loadDropdown() {
   fixedLinks.forEach(link => {
     const anchor = document.createElement('a');
@@ -40,13 +43,19 @@ function loadDropdown() {
     anchor.textContent = page.title;
     anchor.href = '#';
     anchor.addEventListener('click', () => {
+      currentPage = index;
       loadPage(index);
     });
     dropdownContent.appendChild(anchor);
   });
 }
 
-// Carregar iframes da página atual
+// Funcionalidade do menu suspenso
+document.getElementById('dropdownButton').addEventListener('click', () => {
+  dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+});
+
+// Carregar iframes da página
 function loadPage(pageIndex) {
   const iframeContainer = document.getElementById('iframeContainer');
   iframeContainer.innerHTML = '';
@@ -54,10 +63,9 @@ function loadPage(pageIndex) {
 
   const links = pages[pageIndex].iframes;
 
-  // Se o grupo tiver apenas um link, expande o iframe
+  // Expansão automática se houver apenas um link
   if (links.length === 1) {
     iframeContainer.innerHTML = `<iframe src="${links[0]}" style="width: 100%; height: 90vh; border: none;"></iframe>`;
-    updatePagination();
     return;
   }
 
@@ -69,19 +77,29 @@ function loadPage(pageIndex) {
     const iframe = document.createElement('iframe');
     iframe.src = url;
 
+    // Pausar temporizador ao clicar no iframe
     iframe.addEventListener('click', () => {
       pauseTimer();
       showNotification("Temporizador pausado devido à interação.");
     });
 
+    // Botão "Abrir em Nova Aba"
+    const openNewTabButton = document.createElement('button');
+    openNewTabButton.className = 'open-new-tab';
+    openNewTabButton.textContent = 'Abrir em Nova Aba';
+    openNewTabButton.addEventListener('click', () => {
+      window.open(url, '_blank');
+    });
+
     iframeWrapper.appendChild(iframe);
+    iframeWrapper.appendChild(openNewTabButton);
     iframeContainer.appendChild(iframeWrapper);
   });
 
   updatePagination();
 }
 
-// Atualizar os botões de paginação
+// Atualizar paginação
 function updatePagination() {
   pagination.innerHTML = '';
   pages.forEach((_, index) => {
@@ -96,7 +114,7 @@ function updatePagination() {
   });
 }
 
-// Pausar o temporizador
+// Temporizador
 function pauseTimer() {
   if (timer) {
     clearInterval(timer);
@@ -107,7 +125,6 @@ function pauseTimer() {
   }
 }
 
-// Iniciar o temporizador
 function startTimer() {
   if (!timer) {
     timer = setInterval(() => {
@@ -120,7 +137,7 @@ function startTimer() {
   }
 }
 
-// Alternar entre pausar e retornar
+// Alternar entre pausar e retomar
 toggleTimerButton.addEventListener('click', () => {
   if (isPaused) {
     startTimer();
