@@ -10,6 +10,7 @@
   <div class="container">
     <div class="title">
       <h1 id="groupTitle">Group Title</h1>
+      <button id="toggleTheme">Toggle Theme</button>
     </div>
     <div class="iframe-grid" id="iframeContainer">
       <!-- Iframes will be dynamically added here -->
@@ -20,15 +21,13 @@
       <button id="resume" disabled>Resume</button>
       <button id="next">Next</button>
     </div>
-    <div class="timer-control">
-      <label for="timerInput">Adjust Timer (seconds): </label>
-      <input type="number" id="timerInput" min="1" value="5">
-      <button id="setTimer">Set Timer</button>
-    </div>
     <div class="pagination" id="pagination">
       <!-- Pagination buttons will be dynamically added here -->
     </div>
   </div>
+  <!-- Notification container -->
+  <div id="notification" class="notification"></div>
+  
   <script src="script.js"></script>
 </body>
 </html>
