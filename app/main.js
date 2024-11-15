@@ -17,6 +17,8 @@ let timer = null;
 const iframeContainer = document.getElementById('iframeContainer');
 const pagination = document.getElementById('pagination');
 const groupTitle = document.getElementById('groupTitle');
+const notification = document.getElementById('notification');
+const toggleThemeButton = document.getElementById('toggleTheme');
 
 // Function to load a page of iframes
 function loadPage(pageIndex) {
@@ -29,6 +31,13 @@ function loadPage(pageIndex) {
 
     const iframe = document.createElement('iframe');
     iframe.src = url;
+
+    iframe.addEventListener('click', () => {
+      clearInterval(timer);
+      document.getElementById('pause').disabled = true;
+      document.getElementById('resume').disabled = false;
+      showNotification("Timer paused due to iframe interaction.");
+    });
 
     const button = document.createElement('button');
     button.textContent = 'Open in New Tab';
@@ -95,13 +104,24 @@ function startTimer() {
   }, timerInterval);
 }
 
-// Set custom timer interval
-document.getElementById('setTimer').addEventListener('click', () => {
-  const input = document.getElementById('timerInput').value;
-  if (input && input > 0) {
-    timerInterval = input * 1000; // Convert seconds to milliseconds
-    clearInterval(timer);
-    startTimer();
+// Show notification
+function showNotification(message) {
+  notification.textContent = message;
+  notification.classList.add('show');
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 2000);
+}
+
+// Toggle between light and dark theme
+toggleThemeButton.addEventListener('click', () => {
+  const root = document.documentElement;
+  if (root.style.getPropertyValue('--background-color') === '#000') {
+    root.style.setProperty('--background-color', '#fff');
+    root.style.setProperty('--text-color', '#000');
+  } else {
+    root.style.setProperty('--background-color', '#000');
+    root.style.setProperty('--text-color', '#fff');
   }
 });
 
