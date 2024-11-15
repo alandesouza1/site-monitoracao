@@ -1,20 +1,29 @@
 const pages = [
-  // Each array contains iframe URLs for one page
-  ['https://example.com/1', 'https://example.com/2', 'https://example.com/3', 'https://example.com/4',
-   'https://example.com/5', 'https://example.com/6', 'https://example.com/7', 'https://example.com/8',
-   'https://example.com/9', 'https://example.com/10', 'https://example.com/11', 'https://example.com/12'],
-  ['https://example.com/13', 'https://example.com/14', 'https://example.com/15', 'https://example.com/16']
+  {
+    title: "Group 1",
+    iframes: ['https://example.com/1', 'https://example.com/2', 'https://example.com/3', 'https://example.com/4',
+              'https://example.com/5', 'https://example.com/6', 'https://example.com/7', 'https://example.com/8',
+              'https://example.com/9', 'https://example.com/10', 'https://example.com/11', 'https://example.com/12']
+  },
+  {
+    title: "Group 2",
+    iframes: ['https://example.com/13', 'https://example.com/14', 'https://example.com/15', 'https://example.com/16']
+  }
 ];
 
 let currentPage = 0;
+let timerInterval = 5000; // Default to 5 seconds
 let timer = null;
 const iframeContainer = document.getElementById('iframeContainer');
 const pagination = document.getElementById('pagination');
+const groupTitle = document.getElementById('groupTitle');
 
 // Function to load a page of iframes
 function loadPage(pageIndex) {
   iframeContainer.innerHTML = '';
-  pages[pageIndex].forEach((url) => {
+  groupTitle.textContent = pages[pageIndex].title; // Update the title dynamically
+  
+  pages[pageIndex].iframes.forEach((url) => {
     const iframeWrapper = document.createElement('div');
     iframeWrapper.className = 'iframe-wrapper';
 
@@ -79,12 +88,22 @@ function startTimer() {
   timer = setInterval(() => {
     if (currentPage < pages.length - 1) {
       currentPage++;
-      loadPage(currentPage);
     } else {
-      clearInterval(timer);
+      currentPage = 0; // Loop back to the first page
     }
-  }, 5000); // Adjust time (in ms) as needed
+    loadPage(currentPage);
+  }, timerInterval);
 }
+
+// Set custom timer interval
+document.getElementById('setTimer').addEventListener('click', () => {
+  const input = document.getElementById('timerInput').value;
+  if (input && input > 0) {
+    timerInterval = input * 1000; // Convert seconds to milliseconds
+    clearInterval(timer);
+    startTimer();
+  }
+});
 
 // Initialize
 loadPage(currentPage);
