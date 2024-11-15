@@ -13,13 +13,17 @@ body {
   padding: 20px;
 }
 
-.title {
-  text-align: center;
-  margin-bottom: 20px;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.title button {
-  margin-top: 10px;
+.dropdown {
+  position: relative;
+}
+
+.dropdown button {
   padding: 10px 15px;
   font-size: 14px;
   background-color: #007bff;
@@ -29,47 +33,56 @@ body {
   border-radius: 5px;
 }
 
+.dropdown button:hover {
+  background-color: #0056b3;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background-color: var(--background-color, #000);
+  color: var(--text-color, #fff);
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: var(--text-color, #fff);
+}
+
+.dropdown-content a:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.dropdown:hover .dropdown-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
 .iframe-grid {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(4, 1fr); /* Default: 4 columns */
+  grid-template-columns: repeat(4, 1fr);
   justify-content: center;
 }
 
-.iframe-wrapper {
-  position: relative;
-}
-
-iframe {
-  width: 100%;
-  height: 300px;
-  border: none;
-}
-
-iframe + button {
-  display: none;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 5px 10px;
-  font-size: 14px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.iframe-wrapper:hover iframe + button {
-  display: block;
-}
-
-.controls, .pagination {
+.controls {
   text-align: center;
   margin-top: 20px;
 }
 
-.controls button, .pagination button {
+.controls button {
   padding: 10px 15px;
   margin: 5px;
   border: none;
@@ -79,12 +92,11 @@ iframe + button {
   border-radius: 5px;
 }
 
-.controls button:disabled, .pagination button:disabled {
-  background-color: #333;
-  cursor: not-allowed;
+.controls button:hover {
+  background-color: #0056b3;
 }
 
-/* Notification styling */
+/* Notificação */
 .notification {
   position: fixed;
   top: 10px;
@@ -100,21 +112,4 @@ iframe + button {
 
 .notification.show {
   opacity: 1;
-}
-
-/* Responsiveness */
-@media screen and (max-width: 1440px) {
-  .iframe-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  iframe {
-    height: 250px;
-  }
-}
-
-@media screen and (min-width: 1920px) {
-  iframe {
-    height: 400px;
-  }
 }
