@@ -1,31 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dynamic Iframes</title>
+  <title>Grade de Iframes</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <div class="title">
-      <h1 id="groupTitle">Group Title</h1>
-      <button id="toggleTheme">Toggle Theme</button>
+    <div class="header">
+      <div class="dropdown">
+        <button id="dropdownButton">Grupos</button>
+        <div class="dropdown-content" id="dropdownContent">
+          <!-- Links fixos e grupos dinâmicos serão adicionados aqui -->
+        </div>
+      </div>
+      <h1 id="groupTitle">Título do Grupo</h1>
     </div>
     <div class="iframe-grid" id="iframeContainer">
-      <!-- Iframes will be dynamically added here -->
+      <!-- Iframes serão adicionados dinamicamente aqui -->
     </div>
     <div class="controls">
-      <button id="prev">Previous</button>
-      <button id="pause">Pause</button>
-      <button id="resume" disabled>Resume</button>
-      <button id="next">Next</button>
+      <button id="prev">Anterior</button>
+      <button id="toggleTimer">Pausar</button>
+      <button id="adjustTimer">Ajustar Tempo</button>
+      <button id="next">Próximo</button>
+      <button id="toggleTheme">Tema Claro/Escuro</button>
     </div>
     <div class="pagination" id="pagination">
-      <!-- Pagination buttons will be dynamically added here -->
+      <!-- Botões de paginação serão adicionados dinamicamente -->
     </div>
   </div>
-  <!-- Notification container -->
+  <!-- Notificação -->
   <div id="notification" class="notification"></div>
   
   <script src="script.js"></script>
