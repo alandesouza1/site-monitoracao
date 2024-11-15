@@ -1,117 +1,67 @@
-/* Estilo do contêiner dos iframes */
-.iframes-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 iframes por linha */
-    gap: 10px;
-    width: 100%;
-    height: auto;
-    padding: 10px;
+body {
+  font-family: Arial, sans-serif;
+  background-color: #000;
+  color: #fff;
+  margin: 0;
+  padding: 0;
 }
 
-/* Estilo dos iframes */
-.iframe-wrapper {
-    position: relative;
-    overflow: hidden;
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.iframe-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
 }
 
 iframe {
-    width: 100%;
-    height: 200px; /* Ajuste a altura conforme necessário */
-    border: none;
-    transition: transform 0.3s ease;
+  width: 100%;
+  height: 150px;
+  border: none;
 }
 
-/* Zoom e escala ao transformar */
-iframe.fullscreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
+iframe + button {
+  display: block;
+  margin-top: 5px;
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 5px;
 }
 
-/* Botões ocultos por padrão */
-#open-new-tab, #return-to-main {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 10000;
-    padding: 10px;
-    background-color: #00509E; /* Azul */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+iframe + button:hover {
+  background-color: #0056b3;
 }
 
-/* Destaque do botão ativo na lista de sites */
-.active-site {
-    background-color: #00509E;
-    color: white;
-    font-weight: bold;
+.controls, .pagination {
+  text-align: center;
+  margin-top: 20px;
 }
 
-/* Mensagem de hover */
-.hover-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 5px;
-    border-radius: 3px;
-    display: none;
-    z-index: 999;
+.controls button, .pagination button {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-/* Botões de controle na lista lateral */
-#link-list li button {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #004080; /* Azul escuro */
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-#link-list li button:hover {
-    background-color: #00509E; /* Azul claro */
-}
-
-/* Ajuste para botão de zoom, pausa, etc. */
-button {
-    margin: 10px;
-    padding: 10px 15px;
-    background-color: #00509E;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0060CC; /* Efeito de hover */
-}
-
-/* Ajustes de layout responsivo */
-@media (max-width: 1200px) {
-    .iframes-container {
-        grid-template-columns: repeat(3, 1fr); /* 3 iframes por linha */
-    }
-}
-
-@media (max-width: 900px) {
-    .iframes-container {
-        grid-template-columns: repeat(2, 1fr); /* 2 iframes por linha */
-    }
-}
-
-@media (max-width: 600px) {
-    .iframes-container {
-        grid-template-columns: 1fr; /* 1 iframe por linha */
-    }
+.controls button:disabled, .pagination button:disabled {
+  background-color: #333;
+  cursor: not-allowed;
 }
