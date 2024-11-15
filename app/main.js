@@ -18,8 +18,14 @@ const fixedLinks = [
 ];
 
 const dropdownContent = document.getElementById('dropdownContent');
+const toggleTimerButton = document.getElementById('toggleTimer');
+const pagination = document.getElementById('pagination');
+let timer = null;
+let timerInterval = 5000;
+let currentPage = 0;
+let isPaused = false;
 
-// Carregar os links fixos na lista suspensa
+// Carregar links fixos e dinâmicos na lista suspensa
 fixedLinks.forEach(link => {
   const anchor = document.createElement('a');
   anchor.textContent = link.name;
@@ -28,7 +34,6 @@ fixedLinks.forEach(link => {
   dropdownContent.appendChild(anchor);
 });
 
-// Carregar os grupos de iframes na lista suspensa
 pages.forEach((page, index) => {
   const anchor = document.createElement('a');
   anchor.textContent = page.title;
@@ -39,7 +44,7 @@ pages.forEach((page, index) => {
   dropdownContent.appendChild(anchor);
 });
 
-// Função para carregar os iframes
+// Função para carregar a página de iframes
 function loadPage(pageIndex) {
   const iframeContainer = document.getElementById('iframeContainer');
   iframeContainer.innerHTML = '';
@@ -47,11 +52,7 @@ function loadPage(pageIndex) {
 
   const links = pages[pageIndex].iframes;
   if (links.length === 1) {
-    const iframe = document.createElement('iframe');
-    iframe.src = links[0];
-    iframe.style.width = '100%';
-    iframe.style.height = '90vh';
-    iframeContainer.appendChild(iframe);
+    iframeContainer.innerHTML = `<iframe src="${links[0]}" style="width: 100%; height: 90vh; border: none;"></iframe>`;
     return;
   }
 
@@ -63,14 +64,54 @@ function loadPage(pageIndex) {
     iframe.src = url;
 
     iframe.addEventListener('click', () => {
-      clearInterval(timer);
-      toggleTimerButton.textContent = 'Retornar';
+      pauseTimer();
       showNotification("Temporizador pausado devido à interação.");
     });
 
     iframeWrapper.appendChild(iframe);
     iframeContainer.appendChild(iframeWrapper);
   });
+
+  updatePagination();
+}
+
+// Atualizar paginação
+function updatePagination() {
+  pagination.innerHTML = '';
+  for (let i = 0; i < pages.length; i++) {
+    const button = document.createElement('button');
+    button.textContent = i + 1;
+    button.disabled = i === currentPage;
+    button.addEventListener('click', () => {
+      currentPage = i;
+      loadPage(i);
+    });
+    pagination.appendChild(button);
+  }
+}
+
+// Pausar temporizador
+function pauseTimer() {
+  if (timer) {
+    clearInterval(timer);
+    timer = null;
+    isPaused = true;
+    toggleTimerButton.textContent = "Retornar";
+    showNotification("Temporizador pausado.");
+  }
+}
+
+// Iniciar temporizador
+function startTimer() {
+  if (!timer) {
+    timer = setInterval(() => {
+      currentPage = (currentPage + 1) % pages.length;
+      loadPage(currentPage);
+    }, timerInterval);
+    isPaused = false;
+    toggleTimerButton.textContent = "Pausar";
+    showNotification("Temporizador retomado.");
+  }
 }
 
 // Mostrar notificação
@@ -81,10 +122,24 @@ function showNotification(message) {
   setTimeout(() => notification.classList.remove('show'), 2000);
 }
 
+// Ajustar tempo
+document.getElementById('adjustTimer').addEventListener('click', () => {
+  const input = prompt("Digite o tempo em segundos:");
+  if (input && input > 0) {
+    timerInterval = input * 1000;
+    if (!isPaused) {
+      clearInterval(timer);
+      startTimer();
+    }
+    showNotification(`Temporizador ajustado para ${input} segundos.`);
+  }
+});
+
 // Alternar tema
 document.getElementById('toggleTheme').addEventListener('click', () => {
   const root = document.documentElement;
-  if (root.style.getPropertyValue('--background-color') === '#000') {
+  if (root.style.getPropertyValue('--background-color') ===
+('#000') {
     root.style.setProperty('--background-color', '#fff');
     root.style.setProperty('--text-color', '#000');
   } else {
@@ -93,42 +148,15 @@ document.getElementById('toggleTheme').addEventListener('click', () => {
   }
 });
 
-// Controle de temporizador
-let timer = null;
-let timerInterval = 5000;
-
-document.getElementById('toggleTimer').addEventListener('click', () => {
-  if (timer) {
-    clearInterval(timer);
-    timer = null;
-    document.getElementById('toggleTimer').textContent = 'Retornar';
-    showNotification("Temporizador pausado.");
+// Alternar entre pausar e retornar o temporizador
+toggleTimerButton.addEventListener('click', () => {
+  if (isPaused) {
+    startTimer();
   } else {
-    startTimer();
-    document.getElementById('toggleTimer').textContent = 'Pausar';
-    showNotification("Temporizador retomado.");
+    pauseTimer();
   }
 });
 
-document.getElementById('adjustTimer').addEventListener('click', () => {
-  const input = prompt("Digite o tempo em segundos:");
-  if (input && input > 0) {
-    timerInterval = input * 1000;
-    clearInterval(timer);
-    startTimer();
-    document.getElementById('toggleTimer').textContent = 'Pausar';
-    showNotification(`Temporizador ajustado para ${input} segundos.`);
-  }
-});
-
-function startTimer() {
-  timer = setInterval(() => {
-    const nextIndex = (currentPage + 1) % pages.length;
-    loadPage(nextIndex);
-  }, timerInterval);
-}
-
-// Inicializar a página com o primeiro grupo e iniciar o temporizador
-let currentPage = 0;
+// Inicializar página e temporizador
 loadPage(currentPage);
 startTimer();
