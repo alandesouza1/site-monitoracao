@@ -1,34 +1,29 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Iframes</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Iframes</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Contêiner da lista lateral -->
-    <aside id="sidebar">
-        <ul id="link-list">
-            <!-- Botões para alternar entre grupos de sites serão gerados dinamicamente -->
-        </ul>
-        <!-- Botões de controle -->
-        <button id="previous-group">Anterior</button>
-        <button id="next-group">Próximo</button>
-        <button id="pause-resume">⏸ Pausar</button>
-        <button id="adjust-time">Ajustar Tempo</button>
-        <button id="adjust-zoom">Ajustar Zoom</button>
-    </aside>
-
-    <!-- Contêiner dos iframes -->
-    <main class="iframes-container">
-        <!-- Iframes serão gerados dinamicamente -->
-    </main>
-
-    <!-- Botões de controle do iframe expandido -->
-    <button id="open-new-tab">Abrir em Nova Aba</button>
-    <button id="return-to-main">Retornar à Tela Principal</button>
-
-    <script src="script.js"></script>
+  <div class="container">
+    <div class="title">
+      <h1>Group Title</h1>
+    </div>
+    <div class="iframe-grid" id="iframeContainer">
+      <!-- Iframes will be dynamically added here -->
+    </div>
+    <div class="controls">
+      <button id="prev">Previous</button>
+      <button id="pause">Pause</button>
+      <button id="resume" disabled>Resume</button>
+      <button id="next">Next</button>
+    </div>
+    <div class="pagination" id="pagination">
+      <!-- Pagination buttons will be dynamically added here -->
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
