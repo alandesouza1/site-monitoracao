@@ -20,7 +20,8 @@ const fixedLinks = [
   { name: "Facebook", url: "https://facebook.com" }
 ];
 
-const dropdownContent = document.getElementById('dropdownContent');
+const dropdownFixed = document.querySelector('.dropdown-fixed');
+const dropdownDynamic = document.querySelector('.dropdown-dynamic');
 const toggleTimerButton = document.getElementById('toggleTimer');
 const pagination = document.getElementById('pagination');
 let timer = null;
@@ -30,14 +31,16 @@ let isPaused = false;
 
 // Carregar links fixos e dinâmicos na lista suspensa
 function loadDropdown() {
+  // Adicionar links fixos
   fixedLinks.forEach(link => {
     const anchor = document.createElement('a');
     anchor.textContent = link.name;
     anchor.href = link.url;
     anchor.target = '_blank';
-    dropdownContent.appendChild(anchor);
+    dropdownFixed.appendChild(anchor);
   });
 
+  // Adicionar grupos dinâmicos
   pages.forEach((page, index) => {
     const anchor = document.createElement('a');
     anchor.textContent = page.title;
@@ -46,13 +49,17 @@ function loadDropdown() {
       currentPage = index;
       loadPage(index);
     });
-    dropdownContent.appendChild(anchor);
+    dropdownDynamic.appendChild(anchor);
   });
 }
 
-// Funcionalidade do menu suspenso
-document.getElementById('dropdownButton').addEventListener('click', () => {
-  dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+// Funcionalidade do menu suspenso (abrir ao passar o mouse)
+document.querySelector('.dropdown').addEventListener('mouseenter', () => {
+  document.getElementById('dropdownContent').style.display = 'grid';
+});
+
+document.querySelector('.dropdown').addEventListener('mouseleave', () => {
+  document.getElementById('dropdownContent').style.display = 'none';
 });
 
 // Carregar iframes da página
