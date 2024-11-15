@@ -7,7 +7,7 @@ body {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 90%;
   margin: auto;
   padding: 20px;
 }
@@ -19,20 +19,20 @@ body {
 
 .iframe-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
+  justify-content: center;
 }
 
 iframe {
   width: 100%;
-  height: 150px;
+  height: 300px;
   border: none;
 }
 
 iframe + button {
   display: block;
-  margin-top: 5px;
-  padding: 5px 10px;
+  margin: 5px auto 15px;
+  padding: 10px 20px;
   font-size: 14px;
   background-color: #007bff;
   color: white;
@@ -46,12 +46,12 @@ iframe + button:hover {
   background-color: #0056b3;
 }
 
-.controls, .pagination {
+.controls, .pagination, .timer-control {
   text-align: center;
   margin-top: 20px;
 }
 
-.controls button, .pagination button {
+.controls button, .pagination button, #setTimer {
   padding: 10px 15px;
   margin: 5px;
   border: none;
@@ -64,4 +64,45 @@ iframe + button:hover {
 .controls button:disabled, .pagination button:disabled {
   background-color: #333;
   cursor: not-allowed;
+}
+
+/* Responsiveness */
+@media screen and (max-width: 1440px) {
+  .iframe-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns for smaller screens */
+  }
+
+  iframe {
+    height: 250px;
+  }
+}
+
+@media screen and (min-width: 1441px) {
+  .iframe-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns for larger screens */
+  }
+
+  iframe {
+    height: 350px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .iframe-grid {
+    grid-template-columns: repeat(1, 1fr); /* 1 column for very small screens */
+  }
+
+  iframe {
+    height: 200px;
+  }
+
+  iframe + button {
+    font-size: 12px;
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  iframe {
+    height: 400px; /* Larger iframes for large monitors */
+  }
 }
