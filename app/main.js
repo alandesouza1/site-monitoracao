@@ -21,41 +21,47 @@ const dropdownContent = document.getElementById('dropdownContent');
 const toggleTimerButton = document.getElementById('toggleTimer');
 const pagination = document.getElementById('pagination');
 let timer = null;
-let timerInterval = 5000;
+let timerInterval = 5000; // Intervalo padrão de 5 segundos
 let currentPage = 0;
 let isPaused = false;
 
-// Carregar links fixos e dinâmicos na lista suspensa
-fixedLinks.forEach(link => {
-  const anchor = document.createElement('a');
-  anchor.textContent = link.name;
-  anchor.href = link.url;
-  anchor.target = '_blank';
-  dropdownContent.appendChild(anchor);
-});
-
-pages.forEach((page, index) => {
-  const anchor = document.createElement('a');
-  anchor.textContent = page.title;
-  anchor.href = '#';
-  anchor.addEventListener('click', () => {
-    loadPage(index);
+// Carregar os links fixos e grupos dinâmicos na lista suspensa
+function loadDropdown() {
+  fixedLinks.forEach(link => {
+    const anchor = document.createElement('a');
+    anchor.textContent = link.name;
+    anchor.href = link.url;
+    anchor.target = '_blank';
+    dropdownContent.appendChild(anchor);
   });
-  dropdownContent.appendChild(anchor);
-});
 
-// Função para carregar a página de iframes
+  pages.forEach((page, index) => {
+    const anchor = document.createElement('a');
+    anchor.textContent = page.title;
+    anchor.href = '#';
+    anchor.addEventListener('click', () => {
+      loadPage(index);
+    });
+    dropdownContent.appendChild(anchor);
+  });
+}
+
+// Carregar iframes da página atual
 function loadPage(pageIndex) {
   const iframeContainer = document.getElementById('iframeContainer');
   iframeContainer.innerHTML = '';
   document.getElementById('groupTitle').textContent = pages[pageIndex].title;
 
   const links = pages[pageIndex].iframes;
+
+  // Se o grupo tiver apenas um link, expande o iframe
   if (links.length === 1) {
     iframeContainer.innerHTML = `<iframe src="${links[0]}" style="width: 100%; height: 90vh; border: none;"></iframe>`;
+    updatePagination();
     return;
   }
 
+  // Renderizar múltiplos iframes
   links.forEach(url => {
     const iframeWrapper = document.createElement('div');
     iframeWrapper.className = 'iframe-wrapper';
@@ -75,22 +81,22 @@ function loadPage(pageIndex) {
   updatePagination();
 }
 
-// Atualizar paginação
+// Atualizar os botões de paginação
 function updatePagination() {
   pagination.innerHTML = '';
-  for (let i = 0; i < pages.length; i++) {
+  pages.forEach((_, index) => {
     const button = document.createElement('button');
-    button.textContent = i + 1;
-    button.disabled = i === currentPage;
+    button.textContent = index + 1;
+    button.disabled = index === currentPage;
     button.addEventListener('click', () => {
-      currentPage = i;
-      loadPage(i);
+      currentPage = index;
+      loadPage(index);
     });
     pagination.appendChild(button);
-  }
+  });
 }
 
-// Pausar temporizador
+// Pausar o temporizador
 function pauseTimer() {
   if (timer) {
     clearInterval(timer);
@@ -101,7 +107,7 @@ function pauseTimer() {
   }
 }
 
-// Iniciar temporizador
+// Iniciar o temporizador
 function startTimer() {
   if (!timer) {
     timer = setInterval(() => {
@@ -114,15 +120,16 @@ function startTimer() {
   }
 }
 
-// Mostrar notificação
-function showNotification(message) {
-  const notification = document.getElementById('notification');
-  notification.textContent = message;
-  notification.classList.add('show');
-  setTimeout(() => notification.classList.remove('show'), 2000);
-}
+// Alternar entre pausar e retornar
+toggleTimerButton.addEventListener('click', () => {
+  if (isPaused) {
+    startTimer();
+  } else {
+    pauseTimer();
+  }
+});
 
-// Ajustar tempo
+// Ajustar o tempo do temporizador
 document.getElementById('adjustTimer').addEventListener('click', () => {
   const input = prompt("Digite o tempo em segundos:");
   if (input && input > 0) {
@@ -135,11 +142,19 @@ document.getElementById('adjustTimer').addEventListener('click', () => {
   }
 });
 
-// Alternar tema
+// Mostrar notificação
+function showNotification(message) {
+  const notification = document.getElementById('notification');
+  notification.textContent = message;
+  notification.classList.add('show');
+  setTimeout(() => notification.classList.remove('show'), 2000);
+}
+
+// Alternar tema claro/escuro
 document.getElementById('toggleTheme').addEventListener('click', () => {
   const root = document.documentElement;
-  if (root.style.getPropertyValue('--background-color') ===
-('#000') {
+  const currentBackground = root.style.getPropertyValue('--background-color') || '#000';
+  if (currentBackground === '#000') {
     root.style.setProperty('--background-color', '#fff');
     root.style.setProperty('--text-color', '#000');
   } else {
@@ -148,15 +163,7 @@ document.getElementById('toggleTheme').addEventListener('click', () => {
   }
 });
 
-// Alternar entre pausar e retornar o temporizador
-toggleTimerButton.addEventListener('click', () => {
-  if (isPaused) {
-    startTimer();
-  } else {
-    pauseTimer();
-  }
-});
-
-// Inicializar página e temporizador
+// Inicializar a página
+loadDropdown();
 loadPage(currentPage);
 startTimer();
