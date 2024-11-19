@@ -80,6 +80,14 @@ h1#groupTitle {
   align-items: center;
 }
 
+.pagination button.current-page {
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
+  cursor: default; /* Remove o ponteiro de clique */
+  border: 2px solid #007bff;
+}
+
 .controls {
   text-align: center;
   margin-top: 20px;
